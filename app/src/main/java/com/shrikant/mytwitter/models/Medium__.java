@@ -41,6 +41,18 @@ public class Medium__ {
     @Expose
     private Sizes_ sizes;
 
+    public VideoInfo getVideoInfo() {
+        return videoInfo;
+    }
+
+    public void setVideoInfo(VideoInfo videoInfo) {
+        this.videoInfo = videoInfo;
+    }
+
+    @SerializedName("video_info")
+    @Expose
+    private VideoInfo videoInfo;
+
     /**
      * 
      * @return
