@@ -50,6 +50,10 @@
         <activity
             android:name=".TimelineActivity"
             android:label="@string/title_activity_timeline"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ComposeActivity"
+            android:label="@string/title_activity_compose"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

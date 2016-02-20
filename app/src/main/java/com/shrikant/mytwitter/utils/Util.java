@@ -35,6 +35,18 @@ public class Util {
         String numericPart ="";
         String timePart ="";
 
+        if (parts[0].equalsIgnoreCase("in") && StringUtils.isNumeric(parts[1])) {
+            numericPart = parts[1];
+            if (parts[2].contains("minute")) {
+                timePart = "m";
+            } else if (parts[2].contains("hour")) {
+                timePart = "h";
+            } else if (parts[2].contains("second")) {
+                timePart = "s";
+            }
+            return "in " + numericPart + timePart;
+        }
+
         if (StringUtils.isNumeric(parts[0])) {
             numericPart = parts[0];
         }

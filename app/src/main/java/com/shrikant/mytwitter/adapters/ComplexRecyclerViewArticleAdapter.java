@@ -12,7 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -28,7 +28,7 @@ public class ComplexRecyclerViewArticleAdapter
     private final int TEXTONLY = 0, TEXT_PLUS_IMAGE = 1;
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public ComplexRecyclerViewArticleAdapter(Context context, ArrayList<Tweet> tweets) {
+    public ComplexRecyclerViewArticleAdapter(Context context, LinkedList<Tweet> tweets) {
         this.sTweets = tweets;
         mContext = context;
     }

@@ -4,7 +4,10 @@ package com.shrikant.mytwitter.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Tweet {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Tweet implements Parcelable {
 
     @SerializedName("created_at")
     @Expose
@@ -26,34 +29,34 @@ public class Tweet {
     private Boolean truncated;
     @SerializedName("in_reply_to_status_id")
     @Expose
-    private Object inReplyToStatusId;
+    private long inReplyToStatusId;
     @SerializedName("in_reply_to_status_id_str")
     @Expose
-    private Object inReplyToStatusIdStr;
+    private String inReplyToStatusIdStr;
     @SerializedName("in_reply_to_user_id")
     @Expose
-    private Object inReplyToUserId;
+    private long inReplyToUserId;
     @SerializedName("in_reply_to_user_id_str")
     @Expose
-    private Object inReplyToUserIdStr;
+    private String inReplyToUserIdStr;
     @SerializedName("in_reply_to_screen_name")
     @Expose
-    private Object inReplyToScreenName;
+    private String inReplyToScreenName;
     @SerializedName("user")
     @Expose
     private User user;
-    @SerializedName("geo")
-    @Expose
-    private Object geo;
-    @SerializedName("coordinates")
-    @Expose
-    private Object coordinates;
-    @SerializedName("place")
-    @Expose
-    private Object place;
-    @SerializedName("contributors")
-    @Expose
-    private Object contributors;
+//    @SerializedName("geo")
+//    @Expose
+//    private Object geo;
+//    @SerializedName("coordinates")
+//    @Expose
+//    private Object coordinates;
+//    @SerializedName("place")
+//    @Expose
+//    private Object place;
+//    @SerializedName("contributors")
+//    @Expose
+//    private Object contributors;
     @SerializedName("is_quote_status")
     @Expose
     private Boolean isQuoteStatus;
@@ -207,7 +210,7 @@ public class Tweet {
      * @param inReplyToStatusId
      *     The in_reply_to_status_id
      */
-    public void setInReplyToStatusId(Object inReplyToStatusId) {
+    public void setInReplyToStatusId(Long inReplyToStatusId) {
         this.inReplyToStatusId = inReplyToStatusId;
     }
 
@@ -225,7 +228,7 @@ public class Tweet {
      * @param inReplyToStatusIdStr
      *     The in_reply_to_status_id_str
      */
-    public void setInReplyToStatusIdStr(Object inReplyToStatusIdStr) {
+    public void setInReplyToStatusIdStr(String inReplyToStatusIdStr) {
         this.inReplyToStatusIdStr = inReplyToStatusIdStr;
     }
 
@@ -243,7 +246,7 @@ public class Tweet {
      * @param inReplyToUserId
      *     The in_reply_to_user_id
      */
-    public void setInReplyToUserId(Object inReplyToUserId) {
+    public void setInReplyToUserId(Long inReplyToUserId) {
         this.inReplyToUserId = inReplyToUserId;
     }
 
@@ -261,7 +264,7 @@ public class Tweet {
      * @param inReplyToUserIdStr
      *     The in_reply_to_user_id_str
      */
-    public void setInReplyToUserIdStr(Object inReplyToUserIdStr) {
+    public void setInReplyToUserIdStr(String inReplyToUserIdStr) {
         this.inReplyToUserIdStr = inReplyToUserIdStr;
     }
 
@@ -279,7 +282,7 @@ public class Tweet {
      * @param inReplyToScreenName
      *     The in_reply_to_screen_name
      */
-    public void setInReplyToScreenName(Object inReplyToScreenName) {
+    public void setInReplyToScreenName(String inReplyToScreenName) {
         this.inReplyToScreenName = inReplyToScreenName;
     }
 
@@ -301,77 +304,77 @@ public class Tweet {
         this.user = user;
     }
 
-    /**
-     * 
-     * @return
-     *     The geo
-     */
-    public Object getGeo() {
-        return geo;
-    }
-
-    /**
-     * 
-     * @param geo
-     *     The geo
-     */
-    public void setGeo(Object geo) {
-        this.geo = geo;
-    }
-
-    /**
-     * 
-     * @return
-     *     The coordinates
-     */
-    public Object getCoordinates() {
-        return coordinates;
-    }
-
-    /**
-     * 
-     * @param coordinates
-     *     The coordinates
-     */
-    public void setCoordinates(Object coordinates) {
-        this.coordinates = coordinates;
-    }
-
-    /**
-     * 
-     * @return
-     *     The place
-     */
-    public Object getPlace() {
-        return place;
-    }
-
-    /**
-     * 
-     * @param place
-     *     The place
-     */
-    public void setPlace(Object place) {
-        this.place = place;
-    }
-
-    /**
-     * 
-     * @return
-     *     The contributors
-     */
-    public Object getContributors() {
-        return contributors;
-    }
-
-    /**
-     * 
-     * @param contributors
-     *     The contributors
-     */
-    public void setContributors(Object contributors) {
-        this.contributors = contributors;
-    }
+//    /**
+//     *
+//     * @return
+//     *     The geo
+//     */
+//    public Object getGeo() {
+//        return geo;
+//    }
+//
+//    /**
+//     *
+//     * @param geo
+//     *     The geo
+//     */
+//    public void setGeo(Object geo) {
+//        this.geo = geo;
+//    }
+//
+//    /**
+//     *
+//     * @return
+//     *     The coordinates
+//     */
+//    public Object getCoordinates() {
+//        return coordinates;
+//    }
+//
+//    /**
+//     *
+//     * @param coordinates
+//     *     The coordinates
+//     */
+//    public void setCoordinates(Object coordinates) {
+//        this.coordinates = coordinates;
+//    }
+//
+//    /**
+//     *
+//     * @return
+//     *     The place
+//     */
+//    public Object getPlace() {
+//        return place;
+//    }
+//
+//    /**
+//     *
+//     * @param place
+//     *     The place
+//     */
+//    public void setPlace(Object place) {
+//        this.place = place;
+//    }
+//
+//    /**
+//     *
+//     * @return
+//     *     The contributors
+//     */
+//    public Object getContributors() {
+//        return contributors;
+//    }
+//
+//    /**
+//     *
+//     * @param contributors
+//     *     The contributors
+//     */
+//    public void setContributors(Object contributors) {
+//        this.contributors = contributors;
+//    }
 
     /**
      * 
@@ -553,4 +556,80 @@ public class Tweet {
         this.lang = lang;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.createdAt);
+        dest.writeValue(this.id);
+        dest.writeString(this.idStr);
+        dest.writeString(this.text);
+        dest.writeString(this.source);
+        dest.writeValue(this.truncated);
+        dest.writeValue(this.inReplyToStatusId);
+        dest.writeString(this.inReplyToStatusIdStr);
+        dest.writeValue(this.inReplyToUserId);
+        dest.writeString(this.inReplyToUserIdStr);
+        dest.writeString(this.inReplyToScreenName);
+        dest.writeParcelable(this.user, flags);
+//        dest.writeParcelable(this.geo, flags);
+//        dest.writeParcelable(this.coordinates, flags);
+//        dest.writeParcelable(this.place, flags);
+//        dest.writeParcelable(this.contributors, flags);
+        dest.writeValue(this.isQuoteStatus);
+        dest.writeValue(this.retweetCount);
+        dest.writeValue(this.favoriteCount);
+        dest.writeParcelable(this.entities, flags);
+        dest.writeParcelable(this.extendedEntities, flags);
+        dest.writeValue(this.favorited);
+        dest.writeValue(this.retweeted);
+        dest.writeValue(this.possiblySensitive);
+        dest.writeValue(this.possiblySensitiveAppealable);
+        dest.writeString(this.lang);
+    }
+
+    public Tweet() {
+    }
+
+    protected Tweet(Parcel in) {
+        this.createdAt = in.readString();
+        this.id = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.idStr = in.readString();
+        this.text = in.readString();
+        this.source = in.readString();
+        this.truncated = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        this.inReplyToStatusId = (Long) in.readValue(Long.class.getClassLoader());
+        this.inReplyToStatusIdStr = in.readString();
+        this.inReplyToUserId = (Long) in.readValue(Long.class.getClassLoader());
+        this.inReplyToUserIdStr = in.readString();
+        this.inReplyToScreenName = in.readString();
+        this.user = in.readParcelable(User.class.getClassLoader());
+//        this.geo = in.readParcelable(Object.class.getClassLoader());
+//        this.coordinates = in.readParcelable(Object.class.getClassLoader());
+//        this.place = in.readParcelable(Object.class.getClassLoader());
+//        this.contributors = in.readParcelable(Object.class.getClassLoader());
+        this.isQuoteStatus = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        this.retweetCount = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.favoriteCount = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.entities = in.readParcelable(Entities_.class.getClassLoader());
+        this.extendedEntities = in.readParcelable(ExtendedEntities.class.getClassLoader());
+        this.favorited = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        this.retweeted = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        this.possiblySensitive = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        this.possiblySensitiveAppealable = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        this.lang = in.readString();
+    }
+
+    public static final Parcelable.Creator<Tweet> CREATOR = new Parcelable.Creator<Tweet>() {
+        public Tweet createFromParcel(Parcel source) {
+            return new Tweet(source);
+        }
+
+        public Tweet[] newArray(int size) {
+            return new Tweet[size];
+        }
+    };
 }

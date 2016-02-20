@@ -14,27 +14,32 @@ import com.shrikant.mytwitter.models.Tweet;
 
 import org.apache.http.Header;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public class TimelineActivity extends AppCompatActivity {
+    private final int REQUEST_CODE = 200;
     private TwitterClient mTwitterClient;
     private long maxId = -1;
     private int newlyFetchedTweetsAfterScroll;
+    LinearLayoutManager layoutManager;
 
-    ArrayList<Tweet> mTweets;
+    LinkedList<Tweet> mTweets;
     ComplexRecyclerViewArticleAdapter mComplexRecyclerViewArticleAdapter;
 
     @Bind(R.id.rvTweets) RecyclerView mRecyclerViewTweets;
@@ -47,7 +52,8 @@ public class TimelineActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
-        mTweets = new ArrayList<>();
+        //mTweets = new ArrayList<>();
+        mTweets = new LinkedList<>();
         mComplexRecyclerViewArticleAdapter = new ComplexRecyclerViewArticleAdapter(this, mTweets);
         mRecyclerViewTweets.setAdapter(mComplexRecyclerViewArticleAdapter);
 
@@ -56,7 +62,7 @@ public class TimelineActivity extends AppCompatActivity {
         mRecyclerViewTweets.addItemDecoration(itemDecoration);
 
         // Setup layout manager for items
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager = new LinearLayoutManager(this);
         // Control orientation of the items
         // also supports LinearLayoutManager.HORIZONTAL
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -107,7 +113,7 @@ public class TimelineActivity extends AppCompatActivity {
         mTwitterClient.getHomeTimeline(maxId, new TextHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                Log.d("Async onSuccess", responseString);
+                //Log.d("Async onSuccess", responseString);
                 if (responseString != null) {
                     Log.i("TimelineActivity", responseString);
                     try {
@@ -120,9 +126,9 @@ public class TimelineActivity extends AppCompatActivity {
                             List<Tweet> fetchedTweets = gson.fromJson(jsonArray, collectionType);
                             Log.i("TimelineActivity", fetchedTweets.size() + " tweets found");
 
-                            for (Tweet t : fetchedTweets) {
-                                Log.i("TimelineActivity", t.getIdStr());
-                            }
+//                            for (Tweet t : fetchedTweets) {
+//                                Log.i("TimelineActivity", t.getIdStr());
+//                            }
                             newlyFetchedTweetsAfterScroll = fetchedTweets.size();
                             if (newlyFetchedTweetsAfterScroll > 0) {
                                 maxId = Long.parseLong(fetchedTweets.get(fetchedTweets.size() - 1)
@@ -150,5 +156,49 @@ public class TimelineActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.timeline, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle presses on the action bar items
+        switch (item.getItemId()) {
+            case R.id.miCompose:
+                composeTweet();
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void composeTweet() {
+        Toast.makeText(this, "Composed clicked", Toast.LENGTH_SHORT).show();
+        Intent i = new Intent(this, ComposeActivity.class);
+        startActivityForResult(i, REQUEST_CODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.i("TimelineActivity", "Back to onactivity result");
+        // REQUEST_CODE is defined above
+        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE) {
+            // Extract name value from result extras
+            Tweet tweet = (Tweet) data.getExtras().get("tweet");
+            int code = data.getExtras().getInt("code", 0);
+            // Toast the name to display temporarily on screen
+            Log.i("TimelineActivity", tweet.getText().toString());
+            Toast.makeText(this, tweet.getText().toString(), Toast.LENGTH_SHORT).show();
+
+            mTweets.add(0, tweet);
+            //int curSize = mComplexRecyclerViewArticleAdapter.getItemCount();
+            mComplexRecyclerViewArticleAdapter.notifyItemRangeInserted(0,
+                    1);
+            layoutManager.scrollToPosition(0);
+        }
     }
 }
