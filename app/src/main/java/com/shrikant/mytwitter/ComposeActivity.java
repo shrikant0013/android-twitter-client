@@ -12,6 +12,7 @@ import com.shrikant.mytwitter.models.Tweet;
 import org.apache.http.Header;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -45,7 +46,7 @@ public class ComposeActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ButterKnife.bind(this);
-
+        mTextViewCharCount.setTextColor(Color.BLACK);
         mEditTextComposeBody.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -53,7 +54,16 @@ public class ComposeActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                mTextViewCharCount.setText("" + s.length());
+                long length = 0;
+                if (s.length() > 140) {
+                    mTextViewCharCount.setTextColor(Color.RED);
+                    length = 140 - s.length();
+                } else {
+                    mTextViewCharCount.setTextColor(Color.BLACK);
+                    length = s.length();
+                }
+
+                mTextViewCharCount.setText("" + length);
 
             }
 
