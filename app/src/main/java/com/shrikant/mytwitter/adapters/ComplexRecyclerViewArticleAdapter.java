@@ -121,15 +121,8 @@ public class ComplexRecyclerViewArticleAdapter
                                                    int position) {
 
         Tweet tweet = sTweets.get(position);
-//        Article article = articles.get(position);
-//
-//        viewHolder.ivArticle.setImageResource(0); //clearoff
-//        if (!TextUtils.isEmpty(article.getArticleThumbnailUrl())) {
-//            Glide.with(mContext).load(article.getArticleThumbnailUrl())
-//                    .placeholder(R.mipmap.ic_wifi)
-//                    .into(viewHolder.ivArticle);
-//        }
-//        viewHolder.tvArticle.setText(article.getHeadline().getMain());
+
+        viewHolder.mTextViewTweetWithImage.setText(tweet.getText());
 
         if (tweet.getExtendedEntities() != null && tweet.getExtendedEntities().getMedia() != null
                 && tweet.getExtendedEntities().getMedia().size() > 0
