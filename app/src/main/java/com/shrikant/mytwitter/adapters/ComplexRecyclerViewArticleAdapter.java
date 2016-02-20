@@ -153,4 +153,16 @@ public class ComplexRecyclerViewArticleAdapter
 
         viewHolder.mTextViewTimeSend.setText(Util.getRelativeTimeAgo(tweet.getCreatedAt()));
     }
+
+    // Clean all elements of the recycler
+    public void clear() {
+        sTweets.clear();
+        notifyDataSetChanged();
+    }
+
+    // Add a list of items
+    public void addAll(List<Tweet> list) {
+        sTweets.addAll(list);
+        notifyDataSetChanged();
+    }
 }

@@ -16,6 +16,7 @@ import org.apache.http.Header;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -26,6 +27,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -35,8 +37,6 @@ import butterknife.ButterKnife;
 public class TimelineActivity extends AppCompatActivity {
     private final int REQUEST_CODE = 200;
     private TwitterClient mTwitterClient;
-    private long maxId = -1;
-    private int newlyFetchedTweetsAfterScroll;
     LinearLayoutManager layoutManager;
 
     LinkedList<Tweet> mTweets;
@@ -44,6 +44,7 @@ public class TimelineActivity extends AppCompatActivity {
 
     @Bind(R.id.rvTweets) RecyclerView mRecyclerViewTweets;
     @Bind(R.id.toolbar) Toolbar toolbar;
+    @Bind(R.id.swipeContainer)  SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,42 +79,48 @@ public class TimelineActivity extends AppCompatActivity {
                     public void onLoadMore(int page, int totalItemsCount) {
                         // Triggered only when new data needs to be appended to the list
                         // Add whatever code is needed to append new items to the bottom of the list
-                        customLoadMoreDataFromApi(page);
+                        Toast.makeText(getApplicationContext(),
+                                "Loading more...", Toast.LENGTH_SHORT).show();
+                        // Send an API request to retrieve appropriate data using the offset value as a parameter.
+                        // Deserialize API response and then construct new objects to append to the adapter
+                        // Add the new objects to the data source for the adapter
+                        // For efficiency purposes, notify the adapter of only the elements that got changed
+                        // curSize will equal to the index of the first element inserted because the list is 0-indexed
+                        populateTimeLine(true, false);
+
                     }
                 });
 
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Your code to refresh the list here.
+                // Make sure you call swipeContainer.setRefreshing(false)
+                // once the network request has completed successfully.
+                populateTimeLine(false, true);
+            }
+        });
 
         mTwitterClient = TwitterApplication.getRestClient(); //singleton client
-        populateTimeLine(false);
 
-    }
+        //kick off the timelines
+        populateTimeLine(false, false);
 
-    // Append more data into the adapter
-    // This method probably sends out a network request and appends new data items to your adapter.
-    public void customLoadMoreDataFromApi(int offset) {
-        Toast.makeText(this, "offset..." + offset, Toast.LENGTH_SHORT).show();
-        offset = offset % 100;
-        Toast.makeText(this, "Loading more...", Toast.LENGTH_SHORT).show();
-        // Send an API request to retrieve appropriate data using the offset value as a parameter.
-        // Deserialize API response and then construct new objects to append to the adapter
-        // Add the new objects to the data source for the adapter
-        // For efficiency purposes, notify the adapter of only the elements that got changed
-        // curSize will equal to the index of the first element inserted because the list is 0-indexed
-        populateTimeLine(true);
-        int curSize = mComplexRecyclerViewArticleAdapter.getItemCount();
-        mComplexRecyclerViewArticleAdapter.notifyItemRangeInserted(curSize,
-                newlyFetchedTweetsAfterScroll - 1);
     }
 
     //Send an API request to get the timeline json
     // Fill the view by creating the tweet objects from the json
 
     //[] == JsonArray
-    private void populateTimeLine(final boolean isScrolled) {
-        mTwitterClient.getHomeTimeline(maxId, new TextHttpResponseHandler() {
+    private void populateTimeLine(final boolean isScrolled, final boolean isRefreshed) {
+        mTwitterClient.getHomeTimeline(
+                !mTweets.isEmpty()? Long.parseLong(mTweets.getLast().getIdStr()) - 1 : 1,
+                !mTweets.isEmpty()? Long.parseLong(mTweets.getFirst().getIdStr()) : 1,
+                isScrolled, isRefreshed,
+                new TextHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                //Log.d("Async onSuccess", responseString);
+                List<Tweet> fetchedTweets = new ArrayList<Tweet>();
                 if (responseString != null) {
                     Log.i("TimelineActivity", responseString);
                     try {
@@ -123,26 +130,40 @@ public class TimelineActivity extends AppCompatActivity {
                         if (jsonArray != null) {
                             Type collectionType = new TypeToken<List<Tweet>>() {
                             }.getType();
-                            List<Tweet> fetchedTweets = gson.fromJson(jsonArray, collectionType);
+                            fetchedTweets = gson.fromJson(jsonArray, collectionType);
                             Log.i("TimelineActivity", fetchedTweets.size() + " tweets found");
 
-//                            for (Tweet t : fetchedTweets) {
-//                                Log.i("TimelineActivity", t.getIdStr());
-//                            }
-                            newlyFetchedTweetsAfterScroll = fetchedTweets.size();
-                            if (newlyFetchedTweetsAfterScroll > 0) {
-                                maxId = Long.parseLong(fetchedTweets.get(fetchedTweets.size() - 1)
-                                        .getIdStr());
-                                maxId = maxId - 1;
+                            //add to list
+                            if (isRefreshed) {
+                                Log.i("TimelineActivity", fetchedTweets.size() + " new tweets " +
+                                        "found");
+                                for (int i = fetchedTweets.size() - 1; i >= 0; i--) {
+                                    mTweets.addFirst(fetchedTweets.get(i));
+                                }
+                            } else {
+                                mTweets.addAll(fetchedTweets);
                             }
-                            Log.i("TimelineActivity", maxId + " max id");
-                            mTweets.addAll(fetchedTweets);
+                            Log.i("TimelineActivity", mTweets.getFirst().getIdStr() + " max id");
+                            Log.i("TimelineActivity", mTweets.getLast().getIdStr() + " since id");
                             Log.i("TimelineActivity", mTweets.size() + " tweets found");
                         }
                     }catch (JsonParseException e) {
                         Log.d("Async onSuccess", "Json parsing error:" + e.getMessage(), e);
                     }
-                    if (!isScrolled) {
+
+                    //notify adapter
+                    if (isScrolled) {
+                        mComplexRecyclerViewArticleAdapter.notifyItemRangeInserted(
+                                mComplexRecyclerViewArticleAdapter.getItemCount(),
+                                fetchedTweets.size());
+                    } else if(isRefreshed) {
+                        mComplexRecyclerViewArticleAdapter.notifyItemRangeInserted(0,
+                                fetchedTweets.size());
+                        //layoutManager.scrollToPosition(0);
+                        // Now we call setRefreshing(false) to signal refresh has finished
+                        mSwipeRefreshLayout.setRefreshing(false);
+
+                    } else {
                         mComplexRecyclerViewArticleAdapter.notifyDataSetChanged();
                     }
                 }
@@ -194,7 +215,7 @@ public class TimelineActivity extends AppCompatActivity {
             Log.i("TimelineActivity", tweet.getText().toString());
             Toast.makeText(this, tweet.getText().toString(), Toast.LENGTH_SHORT).show();
 
-            mTweets.add(0, tweet);
+            mTweets.addFirst(tweet);
             //int curSize = mComplexRecyclerViewArticleAdapter.getItemCount();
             mComplexRecyclerViewArticleAdapter.notifyItemRangeInserted(0,
                     1);

@@ -12,9 +12,17 @@
     tools:context="com.shrikant.mytwitter.TimelineActivity"
     tools:showIn="@layout/activity_timeline">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rvTweets"
+    <android.support.v4.widget.SwipeRefreshLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/swipeContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/material_grey"/>
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rvTweets"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/material_grey"/>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 </RelativeLayout>
