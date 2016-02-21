@@ -1,7 +1,7 @@
 package com.shrikant.mytwitter.adapters;
 
 import com.shrikant.mytwitter.R;
-import com.shrikant.mytwitter.models.Tweet;
+import com.shrikant.mytwitter.tweetmodels.Tweet;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;

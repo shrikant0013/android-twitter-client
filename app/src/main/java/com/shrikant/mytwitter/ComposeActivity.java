@@ -4,10 +4,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import com.google.gson.reflect.TypeToken;
 
 import com.loopj.android.http.TextHttpResponseHandler;
-import com.shrikant.mytwitter.models.Tweet;
+import com.shrikant.mytwitter.tweetmodels.Tweet;
 
 import org.apache.http.Header;
 
@@ -24,8 +23,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-
-import java.lang.reflect.Type;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -98,9 +95,7 @@ public class ComposeActivity extends AppCompatActivity {
                         Gson gson = new GsonBuilder().create();
                         JsonObject jsonObject = gson.fromJson(responseString, JsonObject.class);
                         if (jsonObject != null) {
-                            Type collectionType = new TypeToken<Tweet>() {
-                            }.getType();
-                            composeTweet = gson.fromJson(jsonObject, collectionType);
+                            composeTweet = Tweet.fromJsonObjectToTweet(jsonObject);
                             Log.i("ComposeActivity", composeTweet.getText());
                         }
                     } catch (JsonParseException e) {

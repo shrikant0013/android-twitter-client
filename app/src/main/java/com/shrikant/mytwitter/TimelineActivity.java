@@ -3,14 +3,17 @@ package com.shrikant.mytwitter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import com.google.gson.reflect.TypeToken;
 
+import com.activeandroid.query.Delete;
+import com.activeandroid.query.Select;
 import com.loopj.android.http.TextHttpResponseHandler;
 import com.shrikant.mytwitter.adapters.ComplexRecyclerViewArticleAdapter;
 import com.shrikant.mytwitter.adapters.DividerItemDecoration;
 import com.shrikant.mytwitter.adapters.EndlessRecyclerViewScrollListener;
-import com.shrikant.mytwitter.models.Tweet;
+import com.shrikant.mytwitter.tweetmodels.Tweet;
+import com.shrikant.mytwitter.tweetmodels.User;
 
 import org.apache.http.Header;
 
@@ -26,10 +29,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -103,7 +109,13 @@ public class TimelineActivity extends AppCompatActivity {
 
         mTwitterClient = TwitterApplication.getRestClient(); //singleton client
 
-        //kick off the timelines
+        readFromDB(); //for previous stored ones
+
+        //Check for internet
+
+        //kick off realtime timelines
+        mTweets.clear();
+        mComplexRecyclerViewArticleAdapter.notifyDataSetChanged();
         populateTimeLine(false, false);
 
     }
@@ -113,69 +125,77 @@ public class TimelineActivity extends AppCompatActivity {
 
     //[] == JsonArray
     private void populateTimeLine(final boolean isScrolled, final boolean isRefreshed) {
+//        if (!isScrolled && !isRefreshed) { //call from onCreate, lets reset with new feed
+//            mTweets = new LinkedList<>();
+//        }
         mTwitterClient.getHomeTimeline(
-                !mTweets.isEmpty()? Long.parseLong(mTweets.getLast().getIdStr()) - 1 : 1,
-                !mTweets.isEmpty()? Long.parseLong(mTweets.getFirst().getIdStr()) : 1,
+                !mTweets.isEmpty() ? Long.parseLong(mTweets.getLast().getIdStr()) - 1 : 1,
+                !mTweets.isEmpty() ? Long.parseLong(mTweets.getFirst().getIdStr()) : 1,
                 isScrolled, isRefreshed,
                 new TextHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                List<Tweet> fetchedTweets = new ArrayList<Tweet>();
-                if (responseString != null) {
-                    Log.i("TimelineActivity", responseString);
-                    try {
-                        Gson gson = new GsonBuilder().create();
-                        JsonArray jsonArray = gson.fromJson(responseString, JsonArray.class);
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                        List<Tweet> fetchedTweets = new ArrayList<Tweet>();
+                        if (responseString != null) {
+                            Log.i("TimelineActivity", responseString);
+                            try {
+                                Gson gson = new GsonBuilder().create();
+                                JsonArray jsonArray = gson.fromJson(responseString, JsonArray.class);
 
-                        if (jsonArray != null) {
-                            Type collectionType = new TypeToken<List<Tweet>>() {
-                            }.getType();
-                            fetchedTweets = gson.fromJson(jsonArray, collectionType);
-                            Log.i("TimelineActivity", fetchedTweets.size() + " tweets found");
+                                if (jsonArray != null) {
 
-                            //add to list
-                            if (isRefreshed) {
-                                Log.i("TimelineActivity", fetchedTweets.size() + " new tweets " +
-                                        "found");
-                                for (int i = fetchedTweets.size() - 1; i >= 0; i--) {
-                                    mTweets.addFirst(fetchedTweets.get(i));
+                                    for (int i = 0; i < jsonArray.size(); i++) {
+                                        JsonObject jsonTweetObject = jsonArray.get(i).getAsJsonObject();
+
+                                        if (jsonTweetObject != null) {
+                                            fetchedTweets.add(Tweet.fromJsonObjectToTweet(jsonTweetObject));
+                                        }
+                                    }
+                                    Log.i("TimelineActivity", fetchedTweets.size() + " tweets found");
+
+                                    //add to list
+                                    if (isRefreshed) {
+                                        Log.i("TimelineActivity", fetchedTweets.size() + " new tweets " +
+                                                "found");
+                                        for (int i = fetchedTweets.size() - 1; i >= 0; i--) {
+                                            mTweets.addFirst(fetchedTweets.get(i));
+                                        }
+                                    } else {
+                                        mTweets.addAll(fetchedTweets);
+                                    }
+                                    Log.i("TimelineActivity", mTweets.getFirst().getIdStr() + " max id");
+                                    Log.i("TimelineActivity", mTweets.getLast().getIdStr() + " since id");
+                                    Log.i("TimelineActivity", mTweets.size() + " tweets found");
                                 }
-                            } else {
-                                mTweets.addAll(fetchedTweets);
+                            } catch (JsonParseException e) {
+                                Log.d("Async onSuccess", "Json parsing error:" + e.getMessage(), e);
                             }
-                            Log.i("TimelineActivity", mTweets.getFirst().getIdStr() + " max id");
-                            Log.i("TimelineActivity", mTweets.getLast().getIdStr() + " since id");
-                            Log.i("TimelineActivity", mTweets.size() + " tweets found");
+
+                            //notify adapter
+                            if (isScrolled) {
+                                mComplexRecyclerViewArticleAdapter.notifyItemRangeInserted(
+                                        mComplexRecyclerViewArticleAdapter.getItemCount(),
+                                        fetchedTweets.size());
+                            } else if (isRefreshed) {
+                                mComplexRecyclerViewArticleAdapter.notifyItemRangeInserted(0,
+                                        fetchedTweets.size());
+                                //layoutManager.scrollToPosition(0);
+                                // Now we call setRefreshing(false) to signal refresh has finished
+                                mSwipeRefreshLayout.setRefreshing(false);
+
+                            } else {
+                                mComplexRecyclerViewArticleAdapter.notifyDataSetChanged();
+                            }
                         }
-                    }catch (JsonParseException e) {
-                        Log.d("Async onSuccess", "Json parsing error:" + e.getMessage(), e);
                     }
 
-                    //notify adapter
-                    if (isScrolled) {
-                        mComplexRecyclerViewArticleAdapter.notifyItemRangeInserted(
-                                mComplexRecyclerViewArticleAdapter.getItemCount(),
-                                fetchedTweets.size());
-                    } else if(isRefreshed) {
-                        mComplexRecyclerViewArticleAdapter.notifyItemRangeInserted(0,
-                                fetchedTweets.size());
-                        //layoutManager.scrollToPosition(0);
-                        // Now we call setRefreshing(false) to signal refresh has finished
-                        mSwipeRefreshLayout.setRefreshing(false);
-
-                    } else {
-                        mComplexRecyclerViewArticleAdapter.notifyDataSetChanged();
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, String responseString,
+                                          Throwable throwable) {
+                        Log.w("AsyncHttpClient", "HTTP Request failure: " + statusCode + " " +
+                                throwable.getMessage());
                     }
-                }
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString,
-                                  Throwable throwable) {
-                Log.w("AsyncHttpClient", "HTTP Request failure: " + statusCode + " " +
-                        throwable.getMessage());
-            }
-        });
+                });
 
     }
 
@@ -221,5 +241,59 @@ public class TimelineActivity extends AppCompatActivity {
                     1);
             layoutManager.scrollToPosition(0);
         }
+    }
+
+    public void saveToDB() {
+        List<User> existingUsers = new Select().from(User.class).execute();
+        Set<String> userIds = new HashSet<>();
+
+        for (User user: existingUsers) {
+            userIds.add(user.getIdStr());
+        }
+
+        for (Tweet tweet : mTweets) {
+            if (!userIds.contains(tweet.getUser().getIdStr())) {
+                tweet.getUser().save();
+                userIds.add(tweet.getUser().getIdStr());
+            }
+            tweet.save();
+        }
+    }
+
+    public void clearDB() {
+        new Delete().from(User.class).execute();
+        new Delete().from(Tweet.class).execute();
+    }
+
+    public void readFromDB() {
+        List<User> existingUsers = new Select().from(User.class).execute();
+        List<Tweet> existingTweets = new Select().from(Tweet.class).execute();
+
+        Map<Long, User> userMap = new HashMap<>();
+
+        if (existingUsers != null) {
+            for (User user : existingUsers) {
+                userMap.put(user.getUser_id(), user);
+            }
+
+        }
+
+        if (existingTweets != null) {
+            for (Tweet tweet : existingTweets) {
+                if (userMap.containsKey(tweet.getUser_id())) {
+                    tweet.setUser(userMap.get(tweet.getUser_id()));
+                }
+                mTweets.add(tweet);
+            }
+            mComplexRecyclerViewArticleAdapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.i("TimelineActivity", "Saving to DB");
+        clearDB();
+        saveToDB();
     }
 }

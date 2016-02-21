@@ -52,4 +52,8 @@ dependencies {
     //compile 'org.glassfish:javax.annotation:10.0-b28'
 
     compile 'org.apache.commons:commons-lang3:3.4'
+
+    //active android
+    compile 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
+
 }

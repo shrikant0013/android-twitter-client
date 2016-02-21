@@ -2,7 +2,7 @@ package com.shrikant.mytwitter.adapters;
 
 import com.bumptech.glide.Glide;
 import com.shrikant.mytwitter.R;
-import com.shrikant.mytwitter.models.Tweet;
+import com.shrikant.mytwitter.tweetmodels.Tweet;
 import com.shrikant.mytwitter.utils.Util;
 
 import android.content.Context;
@@ -47,9 +47,7 @@ public class ComplexRecyclerViewArticleAdapter
 //        }
         //return TEXT_PLUS_IMAGE;
 
-        if (tweet.getExtendedEntities() != null && tweet.getExtendedEntities().getMedia() != null
-                && tweet.getExtendedEntities().getMedia().size() > 0
-                && tweet.getExtendedEntities().getMedia().get(0).getType().equals("photo")) {
+        if (tweet.getMedia_type().equals("photo")) {
             return TEXT_PLUS_IMAGE;
         }
 
@@ -104,8 +102,8 @@ public class ComplexRecyclerViewArticleAdapter
         Tweet tweet = sTweets.get(position);
 
         viewHolder.mTextViewTweetTextOnly.setText(tweet.getText());
-        viewHolder.mTextViewUserName.setText(tweet.getUser().getName());
-        viewHolder.mTextViewTwitterHandle.setText( "@" + tweet.getUser().getScreenName());
+        viewHolder.mTextViewUserName.setText(tweet.getUser().getUserName());
+        viewHolder.mTextViewTwitterHandle.setText( "@" + tweet.getUser().getTwitterHandle());
 
         if (!TextUtils.isEmpty(tweet.getUser().getProfileImageUrl())) {
             Glide.with(mContext).load(tweet.getUser().getProfileImageUrl())
@@ -114,7 +112,7 @@ public class ComplexRecyclerViewArticleAdapter
                     .into(viewHolder.mImageViewProfileImage);
         }
 
-        viewHolder.mTextViewTimeSend.setText(Util.getRelativeTimeAgo(tweet.getCreatedAt()));
+        viewHolder.mTextViewTimeSend.setText(Util.getRelativeTimeAgo(tweet.getCreated_at()));
     }
 
     private void configureImageTextTweetViewHolder(ImageTextTweetViewHolder viewHolder,
@@ -124,18 +122,16 @@ public class ComplexRecyclerViewArticleAdapter
 
         viewHolder.mTextViewTweetWithImage.setText(tweet.getText());
 
-        if (tweet.getExtendedEntities() != null && tweet.getExtendedEntities().getMedia() != null
-                && tweet.getExtendedEntities().getMedia().size() > 0
-                && tweet.getExtendedEntities().getMedia().get(0).getType().equals("photo")) {
+        if (tweet.getMedia_type().equals("photo")) {
 
-            if (!TextUtils.isEmpty(tweet.getExtendedEntities().getMedia().get(0).getMediaUrl())) {
-                Glide.with(mContext).load(tweet.getExtendedEntities().getMedia().get(0).getMediaUrl())
+            if (!TextUtils.isEmpty(tweet.getMedia_url())) {
+                Glide.with(mContext).load(tweet.getMedia_url())
                         .placeholder(R.mipmap.ic_wifi)
                         .into(viewHolder.mImageViewTweetImage);
             }
         }
-        viewHolder.mTextViewUserName.setText(tweet.getUser().getName());
-        viewHolder.mTextViewTwitterHandle.setText( "@" + tweet.getUser().getScreenName());
+        viewHolder.mTextViewUserName.setText(tweet.getUser().getUserName());
+        viewHolder.mTextViewTwitterHandle.setText( "@" + tweet.getUser().getTwitterHandle());
 
         if (!TextUtils.isEmpty(tweet.getUser().getProfileImageUrl())) {
             Glide.with(mContext).load(tweet.getUser().getProfileImageUrl())
@@ -144,7 +140,7 @@ public class ComplexRecyclerViewArticleAdapter
                     .into(viewHolder.mImageViewProfileImage);
         }
 
-        viewHolder.mTextViewTimeSend.setText(Util.getRelativeTimeAgo(tweet.getCreatedAt()));
+        viewHolder.mTextViewTimeSend.setText(Util.getRelativeTimeAgo(tweet.getCreated_at()));
     }
 
     // Clean all elements of the recycler
