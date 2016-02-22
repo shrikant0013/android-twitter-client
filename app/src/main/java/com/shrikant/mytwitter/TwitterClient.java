@@ -67,6 +67,18 @@ public class TwitterClient extends OAuthBaseClient {
         getClient().post(apiUrl, params, handler);
     }
 
+    public void userTimeline(AsyncHttpResponseHandler handler) {
+        String apiUrl = getApiUrl("statuses/user_timeline.json");
+        //Specify the params
+        RequestParams params = new RequestParams();
+            params.put("count", 25);
+            params.put("since_id", 1); //get latest tweets
+
+        //Execute the request
+        getClient().get(apiUrl, params, handler);
+    }
+
+
 
     //COMPOSE TWEET
 

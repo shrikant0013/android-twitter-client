@@ -7,4 +7,9 @@
     <string name="title_activity_compose">ComposeActivity</string>
     <string name="compose_hint">What\'s hapenning</string>
     <string name="send">Tweet</string>
+    <string name="title_activity_tweet_detail">TweetDetailActivity</string>
+    <string name="Button_Reply">Reply</string>
+    <string name="Button_Retweet">ReTweet</string>
+    <string name="Button_Like">Like</string>
+    <string name="Button_Share">Share</string>
 </resources>

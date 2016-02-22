@@ -21,6 +21,8 @@
             android:id="@+id/tvTweetTextWithImage"
             android:autoLink="all"
             android:linksClickable="true"
+            android:background="@color/white"
+
             />
 
         <ImageView
@@ -28,7 +30,13 @@
             android:layout_height="wrap_content"
             android:id="@+id/ivTweetImage"
             android:scaleType="fitXY"
-            android:adjustViewBounds="true"/>
+            android:adjustViewBounds="true"
+            android:background="@color/white"/>
     </LinearLayout>
 
 </LinearLayout>
+
+<!--
+            android:autoLink="all"
+            android:linksClickable="true"
+-->

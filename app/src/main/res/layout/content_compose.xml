@@ -4,23 +4,43 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.shrikant.mytwitter.ComposeActivity"
-    tools:showIn="@layout/activity_compose"
     android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+
+       >
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:id="@+id/ibDismiss"
+            android:src="@mipmap/ic_dismiss2"
+            android:layout_marginLeft="5dp"/>
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/ivComposeUserProfileImage"
+            android:layout_marginLeft="180dp"/>
+
+    </LinearLayout>
 
     <EditText
         android:id="@+id/etComposeBody"
         android:layout_width="match_parent"
-        android:layout_height="411dp"
+        android:layout_height="350dp"
         android:hint="@string/compose_hint"
-        android:gravity="top|left"/>
+        android:gravity="top"
+        />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
-        android:layout_marginLeft="200dp"
+        android:layout_marginLeft="100dp"
         android:layout_marginRight="20dp">
 
         <TextView
@@ -37,7 +57,8 @@
             android:text="@string/send"
             android:layout_gravity="end"
             android:layout_toRightOf="@id/tvCharacterCount"
-            />
+            style="?android:attr/borderlessButtonStyle"
+            android:height="5dp" />
 
     </RelativeLayout>
 </LinearLayout>

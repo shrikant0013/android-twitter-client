@@ -10,9 +10,9 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:name=".TwitterApplication"
@@ -54,6 +54,10 @@
         <activity
             android:name=".ComposeActivity"
             android:label="@string/title_activity_compose"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".TweetDetailActivity"
+            android:label="@string/title_activity_tweet_detail"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
