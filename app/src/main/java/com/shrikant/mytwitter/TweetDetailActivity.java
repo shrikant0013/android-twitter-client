@@ -27,6 +27,12 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -113,7 +119,18 @@ public class TweetDetailActivity extends AppCompatActivity {
                     .into(mImageViewDetailsProfileImage);
         }
 
-        mTextViewDetailsTimeSend.setText(mTweet.getCreated_at());
+        String twitterFormat = "EEE MMM dd HH:mm:ss ZZZZZ yyyy";
+        SimpleDateFormat sf = new SimpleDateFormat(twitterFormat, Locale.ENGLISH);
+        sf.setLenient(true);
+        String relativeDate = "";
+        try {
+            long dateMillis = sf.parse(mTweet.getCreated_at().toString()).getTime();
+            relativeDate  = DateFormat.getDateTimeInstance().format(new Date(dateMillis));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        Log.i("Relative date", relativeDate);
+        mTextViewDetailsTimeSend.setText(relativeDate);
 
         if (!TextUtils.isEmpty(mTweet.getMedia_url()) &&
                 mTweet.getMedia_type().equals("photo")){

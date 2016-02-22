@@ -64,4 +64,21 @@ public class Util {
         }
         return input;
     }
+
+//    public static String getBetterTime(String rawJsonDate) {
+//        String twitterFormat = "EEE MMM dd HH:mm:ss ZZZZZ yyyy";
+//        SimpleDateFormat sf = new SimpleDateFormat(twitterFormat, Locale.ENGLISH);
+//        sf.setLenient(true);
+//
+//        String relativeDate = "";
+//        try {
+//            long dateMillis = sf.parse(rawJsonDate).getTime();
+//            relativeDate = DateUtils.getRelativeDateTimeString(dateMillis,
+//                    System.currentTimeMillis(), DateUtils.FORMAT_SHOW_DATE).toString();
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+//
+//        return shortFormat(relativeDate);
+//    }
 }
