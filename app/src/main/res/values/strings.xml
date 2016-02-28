@@ -19,4 +19,6 @@
     <string name="tagline">TagLine</string>
     <string name="user_profile_followers">5 Followers</string>
     <string name="user_profile_following">5 Following</string>
+    <string name="title_activity_following">FollowingActivity</string>
+    <string name="title_activity_followers">FollowersActivity</string>
 </resources>
