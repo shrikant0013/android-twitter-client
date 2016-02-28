@@ -1,9 +1,9 @@
 package com.shrikant.mytwitter.adapters;
 
-import com.bumptech.glide.Glide;
 import com.shrikant.mytwitter.R;
 import com.shrikant.mytwitter.tweetmodels.Tweet;
 import com.shrikant.mytwitter.utils.Util;
+import com.squareup.picasso.Picasso;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * @author Shrikant Pandhare
  */
-public class ComplexRecyclerViewArticleAdapter
+public class ComplexRecyclerViewTweetsAdapter
         extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     // The items to display in your RecyclerView
@@ -28,7 +28,7 @@ public class ComplexRecyclerViewArticleAdapter
     private final int TEXTONLY = 0, TEXT_PLUS_IMAGE = 1;
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public ComplexRecyclerViewArticleAdapter(Context context, LinkedList<Tweet> tweets) {
+    public ComplexRecyclerViewTweetsAdapter(Context context, LinkedList<Tweet> tweets) {
         this.sTweets = tweets;
         mContext = context;
     }
@@ -104,11 +104,12 @@ public class ComplexRecyclerViewArticleAdapter
         viewHolder.mTextViewTweetTextOnly.setText(tweet.getText());
         viewHolder.mTextViewUserName.setText(tweet.getUser().getUserName());
         viewHolder.mTextViewTwitterHandle.setText( "@" + tweet.getUser().getTwitterHandle());
+        viewHolder.mImageViewProfileImage.setTag(tweet.getUser().getTwitterHandle());
 
         if (!TextUtils.isEmpty(tweet.getUser().getProfileImageUrl())) {
-            Glide.with(mContext).load(tweet.getUser().getProfileImageUrl())
+            Picasso.with(mContext).load(tweet.getUser().getProfileImageUrl())
                     .placeholder(R.mipmap.ic_wifi)
-                    .fitCenter()
+                    //.fitCenter()
                     .into(viewHolder.mImageViewProfileImage);
         }
 
@@ -125,7 +126,7 @@ public class ComplexRecyclerViewArticleAdapter
         if (tweet.getMedia_type().equals("photo")) {
 
             if (!TextUtils.isEmpty(tweet.getMedia_url())) {
-                Glide.with(mContext).load(tweet.getMedia_url())
+                Picasso.with(mContext).load(tweet.getMedia_url())
                         .placeholder(R.mipmap.ic_wifi)
                         .into(viewHolder.mImageViewTweetImage);
             }
@@ -134,11 +135,12 @@ public class ComplexRecyclerViewArticleAdapter
         viewHolder.mTextViewTwitterHandle.setText( "@" + tweet.getUser().getTwitterHandle());
 
         if (!TextUtils.isEmpty(tweet.getUser().getProfileImageUrl())) {
-            Glide.with(mContext).load(tweet.getUser().getProfileImageUrl())
+            Picasso.with(mContext).load(tweet.getUser().getProfileImageUrl())
                     .placeholder(R.mipmap.ic_wifi)
-                    .fitCenter()
+                    //.fitCenter()
                     .into(viewHolder.mImageViewProfileImage);
         }
+        viewHolder.mImageViewProfileImage.setTag(tweet.getUser().getTwitterHandle());
 
         viewHolder.mTextViewTimeSend.setText(Util.getRelativeTimeAgo(tweet.getCreated_at()));
     }

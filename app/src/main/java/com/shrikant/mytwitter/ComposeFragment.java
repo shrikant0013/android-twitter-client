@@ -38,12 +38,9 @@ public class ComposeFragment  extends DialogFragment {
 
     private TwitterClient mTwitterClient;
     @Bind(R.id.btnTweetSent) Button mButtonTweetSend;
-    @Bind(R.id.tvCharacterCount)
-    TextView mTextViewCharCount;
+    @Bind(R.id.tvCharacterCount) TextView mTextViewCharCount;
     @Bind(R.id.etComposeBody) EditText mEditTextComposeBody;
     @Bind(R.id.ivComposeUserProfileImage) ImageView mImageViewUserProfileImage;
-
-
 
     @Nullable
     @Override
@@ -118,7 +115,7 @@ public class ComposeFragment  extends DialogFragment {
                         Log.d("Compose tweet onSuccess", "Json parsing error:" + e.getMessage(), e);
                     }
                 }
-                ((TimelineActivity) getActivity()).updateStatus(composeTweet);
+                //((TimelineActivity) getActivity()).updateStatus(composeTweet);
                 dismiss();
             }
 

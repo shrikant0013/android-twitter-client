@@ -3,6 +3,7 @@ package com.shrikant.mytwitter;
 import com.codepath.oauth.OAuthBaseClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.TextHttpResponseHandler;
 
 import org.scribe.builder.api.Api;
 import org.scribe.builder.api.TwitterApi;
@@ -55,6 +56,9 @@ public class TwitterClient extends OAuthBaseClient {
         }
         //Execute the request
         getClient().get(apiUrl, params, handler);
+//        getClient().get(
+//                "https://gist.githubusercontent.com/shrikant0013/0ab543ce0b2f645eb3bb/raw/92d6f17df7374d9aa4c55a45ec397fb1940c29d8/homelinetweet",
+//                handler);
     }
 
     public void sendTweet(String text, AsyncHttpResponseHandler handler) {
@@ -67,17 +71,44 @@ public class TwitterClient extends OAuthBaseClient {
         getClient().post(apiUrl, params, handler);
     }
 
-    public void userTimeline(AsyncHttpResponseHandler handler) {
+    public void getUserTimeline(String screenName, AsyncHttpResponseHandler handler) {
         String apiUrl = getApiUrl("statuses/user_timeline.json");
         //Specify the params
         RequestParams params = new RequestParams();
-            params.put("count", 25);
-            params.put("since_id", 1); //get latest tweets
-
+        params.put("count", 25);
+        params.put("screen_name", screenName);
+        //params.put("since_id", 1); //get latest tweets
         //Execute the request
         getClient().get(apiUrl, params, handler);
     }
 
+    public void getMyInfo(AsyncHttpResponseHandler handler) {
+        String apiUrl = getApiUrl("account/verify_credentials.json");
+        //Execute the request
+        getClient().get(apiUrl, null, handler);
+    }
+
+    public void getMentionsTimeline(long l, long l1, boolean isScrolled,
+                                    boolean isRefreshed,
+                                    TextHttpResponseHandler textHttpResponseHandler) {
+        String apiUrl = getApiUrl("statuses/mentions_timeline.json");
+        //Specify the params
+        RequestParams params = new RequestParams();
+        params.put("count", 25);
+
+        //Execute the request
+        getClient().get(apiUrl, textHttpResponseHandler);
+    }
+
+    public void getUserInfo(String screenName, AsyncHttpResponseHandler handler) {
+        String apiUrl = getApiUrl("users/show.json");
+        //Execute the request
+        RequestParams params = new RequestParams();
+        params.put("screen_name", screenName);
+        getClient().get(apiUrl, params, handler);
+    }
+
+    //https://gist.github.com/shrikant0013/0ab543ce0b2f645eb3bb
 
 
     //COMPOSE TWEET

@@ -12,4 +12,11 @@
     <string name="Button_Retweet">ReTweet</string>
     <string name="Button_Like">Like</string>
     <string name="Button_Share">Share</string>
+    <string name="profile">Profile</string>
+    <string name="compose">Compose</string>
+    <string name="title_activity_profile">ProfileActivity</string>
+    <string name="name">Name</string>
+    <string name="tagline">TagLine</string>
+    <string name="user_profile_followers">5 Followers</string>
+    <string name="user_profile_following">5 Following</string>
 </resources>

@@ -58,6 +58,10 @@
         <activity
             android:name=".TweetDetailActivity"
             android:label="@string/title_activity_tweet_detail"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ProfileActivity"
+            android:label="@string/title_activity_profile"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

@@ -51,12 +51,15 @@ public class Util {
             numericPart = parts[0];
         }
 
-        if (parts[1].contains("minute")) {
-            timePart = "m";
-        } else if (parts[1].contains("hour")) {
-            timePart = "h";
-        } else if (parts[1].contains("second")) {
-            timePart = "s";
+        if (parts.length > 1) {
+
+            if (parts[1].contains("minute")) {
+                timePart = "m";
+            } else if (parts[1].contains("hour")) {
+                timePart = "h";
+            } else if (parts[1].contains("second")) {
+                timePart = "s";
+            }
         }
 
         if (!StringUtils.isEmpty(numericPart) && !StringUtils.isEmpty(timePart)) {
