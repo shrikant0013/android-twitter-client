@@ -50,7 +50,8 @@
         <activity
             android:name=".TimelineActivity"
             android:label="@string/title_activity_timeline"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:launchMode="singleTop"/>
         <activity
             android:name=".ComposeActivity"
             android:label="@string/title_activity_compose"
@@ -70,7 +71,18 @@
         <activity
             android:name=".FollowersActivity"
             android:label="@string/title_activity_followers"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".SearchActivity"
+            android:label="@string/title_activity_search"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".TimelineActivity" >
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".TimelineActivity" />
+
+        </activity>
     </application>
 
 </manifest>

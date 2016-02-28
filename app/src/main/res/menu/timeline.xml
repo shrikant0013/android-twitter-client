@@ -17,4 +17,10 @@
         android:title="@string/profile"
         android:icon="@drawable/ic_profile"
         android:onClick="onProfileClick"/>
+    <item
+        android:id="@+id/tweetSearch"
+        app:showAsAction="ifRoom"
+        android:title="@string/profile"
+        android:icon="@drawable/ic_search_timeline"
+        android:onClick="onSearchClick"/>
 </menu>

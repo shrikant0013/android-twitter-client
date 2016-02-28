@@ -140,55 +140,17 @@ public class TimelineActivity extends AppCompatActivity
         startActivity(i);
     }
 
+    public void onSearchClick(MenuItem item) {
+        Intent i = new Intent(this, SearchActivity.class);
+        startActivity(i);
+    }
+
     public void showProfile(View view) {
         Intent i = new Intent(this, ProfileActivity.class);
         Log.i("TimelineActivity", "Clicked user profile is: " + (String)view.getTag());
         i.putExtra("screen_name", (String)view.getTag());
         startActivity(i);
     }
-
-//    void getMyInfo() {
-//        mTwitterClient.getUserTimeline(
-//            new TextHttpResponseHandler() {
-//                @Override
-//                public void onSuccess(int statusCode, Header[] headers, String responseString) {
-//                    List<Tweet> fetchedTweets = new ArrayList<Tweet>();
-//                    if (responseString != null) {
-//                        Log.i("ComposeFragment", responseString);
-//                        try {
-//                            Gson gson = new GsonBuilder().create();
-//                            JsonArray jsonArray = gson.fromJson(responseString, JsonArray.class);
-//                            if (jsonArray != null) {
-//                                for (int i = 0; i < jsonArray.size(); i++) {
-//                                    JsonObject jsonTweetObject = jsonArray.get(i).getAsJsonObject();
-//
-//                                    if (jsonTweetObject.has("user")) {
-//                                        JsonObject jsonObject = jsonTweetObject.get("user")
-//                                                .getAsJsonObject();
-//                                        me = Me.fromJsonObjectToMe(jsonObject);
-//                                        if (!TextUtils.isEmpty(me.getMyName())
-//                                                && !TextUtils.isEmpty(me.getMyProfileImageUrl())
-//                                                && !TextUtils.isEmpty(me.getMyTwitterHandle())) {
-//                                            break;
-//                                        }
-//                                    }
-//
-//                                }
-//                            }
-//                        } catch (JsonParseException e) {
-//                            Log.d("Async onSuccess", "Json parsing error:" + e.getMessage(), e);
-//                        }
-//                    }
-//                    launchComposeDialog();
-//                }
-//
-//                @Override
-//                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-//                    Log.w("AsyncHttpClient", "HTTP Request failure: " + statusCode + " " +
-//                            throwable.getMessage());
-//                }
-//            });
-//    }
 
     void editTweet() {
         TwitterClient mTwitterClient = TwitterApplication.getRestClient();

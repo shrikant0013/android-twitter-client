@@ -126,6 +126,27 @@ public class TwitterClient extends OAuthBaseClient {
         getClient().get(apiUrl, params, handler);
     }
 
+    public void searchTweets(String query, long maxId,  long sinceId, boolean isScrolled,
+                             boolean isRefreshed,
+                             AsyncHttpResponseHandler handler) {
+        String apiUrl = getApiUrl("search/tweets.json");
+        //Execute the request
+        RequestParams params = new RequestParams();
+        params.put("q", query);
+
+        if (isScrolled) {
+            params.put("max_id", maxId);
+            params.put("count", 25);
+        } else if(isRefreshed) {
+            params.put("since_id", sinceId);
+        } else {
+            params.put("count", 25);
+            params.put("since_id", 1); //get latest tweets
+        }
+
+        getClient().get(apiUrl, params, handler);
+    }
+
     //https://gist.github.com/shrikant0013/0ab543ce0b2f645eb3bb
 
 

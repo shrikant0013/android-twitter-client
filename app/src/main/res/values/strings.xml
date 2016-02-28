@@ -21,4 +21,6 @@
     <string name="user_profile_following">5 Following</string>
     <string name="title_activity_following">FollowingActivity</string>
     <string name="title_activity_followers">FollowersActivity</string>
+    <string name="title_activity_search">SearchActivity</string>
+    <string name="search">Search Twitter</string>
 </resources>
