@@ -11,6 +11,7 @@ import com.shrikant.mytwitter.tweetmodels.Tweet;
 
 import org.apache.http.Header;
 
+import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -36,11 +37,30 @@ import butterknife.OnClick;
  */
 public class ComposeFragment  extends DialogFragment {
 
+    // Define the listener of the interface type
+    // listener will the activity instance containing fragment
+    private OnTweetComposedListener mOnTweetComposedListener;
+
+    // Define the events that the fragment will use to communicate
+    public interface OnTweetComposedListener {
+        // This can be any number of events to be sent to the activity
+        public void updateStatus(Tweet composeTweet );
+    }
+
     private TwitterClient mTwitterClient;
     @Bind(R.id.btnTweetSent) Button mButtonTweetSend;
     @Bind(R.id.tvCharacterCount) TextView mTextViewCharCount;
     @Bind(R.id.etComposeBody) EditText mEditTextComposeBody;
     @Bind(R.id.ivComposeUserProfileImage) ImageView mImageViewUserProfileImage;
+
+    public static ComposeFragment newInstance(String userProfileUrl) {
+        ComposeFragment composeFragment = new ComposeFragment();
+        Bundle args = new Bundle();
+        args.putString("user_profile_url", userProfileUrl);
+        composeFragment.setArguments(args);
+
+        return composeFragment;
+    }
 
     @Nullable
     @Override
@@ -85,8 +105,16 @@ public class ComposeFragment  extends DialogFragment {
             }
         });
 
-        if (TimelineActivity.me != null && !TextUtils.isEmpty(TimelineActivity.me.getMyProfileImageUrl())) {
-            Glide.with(getContext()).load(TimelineActivity.me.getMyProfileImageUrl())
+//        if (TimelineActivity.me != null && !TextUtils.isEmpty(TimelineActivity.me.getMyProfileImageUrl())) {
+//            Glide.with(getContext()).load(TimelineActivity.me.getMyProfileImageUrl())
+//                    .placeholder(R.mipmap.ic_wifi)
+//                    .fitCenter()
+//                    .into(mImageViewUserProfileImage);
+//        }
+
+        String userProfileUrl = getArguments().getString("user_profile_url");
+        if (!TextUtils.isEmpty(userProfileUrl)) {
+            Glide.with(getContext()).load(userProfileUrl)
                     .placeholder(R.mipmap.ic_wifi)
                     .fitCenter()
                     .into(mImageViewUserProfileImage);
@@ -116,6 +144,7 @@ public class ComposeFragment  extends DialogFragment {
                     }
                 }
                 //((TimelineActivity) getActivity()).updateStatus(composeTweet);
+                mOnTweetComposedListener.updateStatus(composeTweet);
                 dismiss();
             }
 
@@ -131,5 +160,17 @@ public class ComposeFragment  extends DialogFragment {
     @OnClick(R.id.ibDismiss)
     public void dismissFragment(View view) {
         dismiss();
+    }
+
+    // Store the listener (activity) that will have events fired once the fragment is attached
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (activity instanceof OnTweetComposedListener) {
+            mOnTweetComposedListener = (OnTweetComposedListener) activity;
+        } else {
+            throw new ClassCastException(activity.toString()
+                    + " must implement ComposeFragment.OnTweetComposedListener");
+        }
     }
 }

@@ -1,30 +1,42 @@
 package com.shrikant.mytwitter;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+
+import com.loopj.android.http.TextHttpResponseHandler;
 import com.shrikant.mytwitter.adapters.TweetsPagerAdapter;
-import com.shrikant.mytwitter.tweetmodels.Me;
+import com.shrikant.mytwitter.fragments.HomeTweetsFragment;
 import com.shrikant.mytwitter.tweetmodels.Tweet;
+import com.shrikant.mytwitter.tweetmodels.User;
+
+import org.apache.http.Header;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import java.util.List;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class TimelineActivity extends AppCompatActivity {
+public class TimelineActivity extends AppCompatActivity
+            implements ComposeFragment.OnTweetComposedListener {
     private final int REQUEST_CODE = 200;
-
-    public static Me me;
-
 
     @Bind(R.id.toolbar) Toolbar toolbar;
     @Bind(R.id.sliding_tabs) TabLayout mTabLayout;
@@ -43,8 +55,15 @@ public class TimelineActivity extends AppCompatActivity {
         vpPager.setAdapter(new TweetsPagerAdapter(getSupportFragmentManager()));
         mTabLayout.setupWithViewPager(vpPager);
 
-        //mTweets = new ArrayList<>();
-
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+                editTweet();
+            }
+        });
     }
 
     //Send an API request to get the timeline json
@@ -110,9 +129,8 @@ public class TimelineActivity extends AppCompatActivity {
 
 
 
-    public void launchComposeDialog() {
-
-        ComposeFragment composeFragment = new ComposeFragment();
+    public void launchComposeDialog(String userProfileUrl) {
+        ComposeFragment composeFragment = ComposeFragment.newInstance(userProfileUrl);
         FragmentManager fm = getSupportFragmentManager();
         composeFragment.show(fm, "compose");
     }
@@ -172,5 +190,52 @@ public class TimelineActivity extends AppCompatActivity {
 //            });
 //    }
 
+    void editTweet() {
+        TwitterClient mTwitterClient = TwitterApplication.getRestClient();
+        mTwitterClient.getMyInfo(new TextHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                try {
+                    Gson gson = new GsonBuilder().create();
+                    JsonObject jsonUserObject = gson.fromJson(responseString, JsonObject.class);
 
+                    if (jsonUserObject != null) {
+                        User newUser = User.fromJsonObjectToUser(jsonUserObject);
+                        if (newUser != null && !TextUtils.isEmpty(newUser.getProfileImageUrl())) {
+                            launchComposeDialog(newUser.getProfileImageUrl());
+                        }
+                    }
+                } catch (JsonParseException e) {
+                    Log.d("Async onSuccess", "Json parsing error:" + e.getMessage(), e);
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                Log.w("AsyncHttpClient", "HTTP Request failure: " + statusCode + " " +
+                        throwable.getMessage());
+            }
+
+        });
+    }
+
+    @Override
+    public void updateStatus(Tweet composeTweet) {
+        List<Fragment> fragmentList = getSupportFragmentManager().getFragments();
+        HomeTweetsFragment homeTweetsFragment = null;
+        for (Fragment f : fragmentList) {
+            if (f instanceof HomeTweetsFragment) {
+                homeTweetsFragment = (HomeTweetsFragment)f;
+                break;
+            }
+        }
+        if (homeTweetsFragment != null) {
+            homeTweetsFragment.mTweets.addFirst(composeTweet);
+            //int curSize = mComplexRecyclerViewArticleAdapter.getItemCount();
+            homeTweetsFragment.mComplexRecyclerViewHomeTweetsAdapter.notifyItemRangeInserted(0,
+                    1);
+            homeTweetsFragment.layoutManager.scrollToPosition(0);
+
+        }
+    }
 }

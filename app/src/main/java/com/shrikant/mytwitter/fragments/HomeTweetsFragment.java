@@ -37,9 +37,9 @@ import butterknife.ButterKnife;
  * Created by spandhare on 2/22/16.
  */
 public class HomeTweetsFragment extends TweetsFragment {
-    private LinearLayoutManager layoutManager;
-    private LinkedList<Tweet> mTweets;
-    private ComplexRecyclerViewTweetsAdapter mComplexRecyclerViewHomeTweetsAdapter;
+    public LinearLayoutManager layoutManager;
+    public LinkedList<Tweet> mTweets;
+    public ComplexRecyclerViewTweetsAdapter mComplexRecyclerViewHomeTweetsAdapter;
 
     @Bind(R.id.rvTweets) RecyclerView mRecyclerViewTweets;
     @Bind(R.id.swipeContainer) SwipeRefreshLayout mSwipeRefreshLayout;
@@ -70,30 +70,30 @@ public class HomeTweetsFragment extends TweetsFragment {
         mRecyclerViewTweets.setLayoutManager(layoutManager);
 
         mRecyclerViewTweets.addOnScrollListener(
-                new EndlessRecyclerViewScrollListener(layoutManager) {
-                    @Override
-                    public void onLoadMore(int page, int totalItemsCount) {
-                        // Triggered only when new data needs to be appended to the list
-                        // Add whatever code is needed to append new items to the bottom of the list
-                        Toast.makeText(getContext(),
-                                "Loading more...", Toast.LENGTH_SHORT).show();
-                        // Send an API request to retrieve appropriate data using the offset value as a parameter.
-                        // Deserialize API response and then construct new objects to append to the adapter
-                        // Add the new objects to the data source for the adapter
-                        // For efficiency purposes, notify the adapter of only the elements that got changed
-                        // curSize will equal to the index of the first element inserted because the list is 0-indexed
-                        populateTimeLine(true, false);
+            new EndlessRecyclerViewScrollListener(layoutManager) {
+                @Override
+                public void onLoadMore(int page, int totalItemsCount) {
+                    // Triggered only when new data needs to be appended to the list
+                    // Add whatever code is needed to append new items to the bottom of the list
+                    Toast.makeText(getContext(),
+                            "Loading more...", Toast.LENGTH_SHORT).show();
+                    // Send an API request to retrieve appropriate data using the offset value as a parameter.
+                    // Deserialize API response and then construct new objects to append to the adapter
+                    // Add the new objects to the data source for the adapter
+                    // For efficiency purposes, notify the adapter of only the elements that got changed
+                    // curSize will equal to the index of the first element inserted because the list is 0-indexed
+                    populateTimeLine(true, false);
 
-                    }
-                });
+                }
+            });
 
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                // Your code to refresh the list here.
-                // Make sure you call swipeContainer.setRefreshing(false)
-                // once the network request has completed successfully.
-                populateTimeLine(false, true);
+            // Your code to refresh the list here.
+            // Make sure you call swipeContainer.setRefreshing(false)
+            // once the network request has completed successfully.
+            populateTimeLine(false, true);
             }
         });
 
@@ -114,6 +114,7 @@ public class HomeTweetsFragment extends TweetsFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         mTweets = new LinkedList<>();
         mComplexRecyclerViewHomeTweetsAdapter = new ComplexRecyclerViewTweetsAdapter(getActivity(),
                 mTweets);
@@ -122,73 +123,73 @@ public class HomeTweetsFragment extends TweetsFragment {
     @Override
     void populateTimeLine(final boolean isScrolled, final boolean isRefreshed) {
         mTwitterClient.getHomeTimeline(
-                !mTweets.isEmpty() ? Long.parseLong(mTweets.getLast().getIdStr()) - 1 : 1,
-                !mTweets.isEmpty() ? Long.parseLong(mTweets.getFirst().getIdStr()) : 1,
-                isScrolled, isRefreshed,
-                new TextHttpResponseHandler() {
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                        List<Tweet> fetchedTweets = new ArrayList<Tweet>();
-                        if (responseString != null) {
-                            Log.i("TimelineActivity", responseString);
-                            try {
-                                Gson gson = new GsonBuilder().create();
-                                JsonArray jsonArray = gson.fromJson(responseString, JsonArray.class);
+            !mTweets.isEmpty() ? Long.parseLong(mTweets.getLast().getIdStr()) - 1 : 1,
+            !mTweets.isEmpty() ? Long.parseLong(mTweets.getFirst().getIdStr()) : 1,
+            isScrolled, isRefreshed,
+            new TextHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                    List<Tweet> fetchedTweets = new ArrayList<Tweet>();
+                    if (responseString != null) {
+                        Log.i("TimelineActivity", responseString);
+                        try {
+                            Gson gson = new GsonBuilder().create();
+                            JsonArray jsonArray = gson.fromJson(responseString, JsonArray.class);
 
-                                if (jsonArray != null) {
+                            if (jsonArray != null) {
 
-                                    for (int i = 0; i < jsonArray.size(); i++) {
-                                        JsonObject jsonTweetObject = jsonArray.get(i).getAsJsonObject();
+                                for (int i = 0; i < jsonArray.size(); i++) {
+                                    JsonObject jsonTweetObject = jsonArray.get(i).getAsJsonObject();
 
-                                        if (jsonTweetObject != null) {
-                                            fetchedTweets.add(Tweet.fromJsonObjectToTweet(jsonTweetObject));
-                                        }
+                                    if (jsonTweetObject != null) {
+                                        fetchedTweets.add(Tweet.fromJsonObjectToTweet(jsonTweetObject));
                                     }
-                                    Log.i("TimelineActivity", fetchedTweets.size() + " tweets found");
-
-                                    //add to list
-                                    if (isRefreshed) {
-                                        Log.i("TimelineActivity", fetchedTweets.size() + " new tweets " +
-                                                "found");
-                                        for (int i = fetchedTweets.size() - 1; i >= 0; i--) {
-                                            mTweets.addFirst(fetchedTweets.get(i));
-                                        }
-                                    } else {
-                                        mTweets.addAll(fetchedTweets);
-                                    }
-                                    Log.i("TimelineActivity", mTweets.getFirst().getIdStr() + " max id");
-                                    Log.i("TimelineActivity", mTweets.getLast().getIdStr() + " since id");
-                                    Log.i("TimelineActivity", mTweets.size() + " tweets found");
                                 }
-                            } catch (JsonParseException e) {
-                                Log.d("Async onSuccess", "Json parsing error:" + e.getMessage(), e);
-                            }
+                                Log.i("TimelineActivity", fetchedTweets.size() + " tweets found");
 
-                            //notify adapter
-                            if (isScrolled) {
-                                mComplexRecyclerViewHomeTweetsAdapter.notifyItemRangeInserted(
-                                        mComplexRecyclerViewHomeTweetsAdapter.getItemCount(),
-                                        fetchedTweets.size());
-                            } else if (isRefreshed) {
-                                mComplexRecyclerViewHomeTweetsAdapter.notifyItemRangeInserted(0,
-                                        fetchedTweets.size());
-                                //layoutManager.scrollToPosition(0);
-                                // Now we call setRefreshing(false) to signal refresh has finished
-                                mSwipeRefreshLayout.setRefreshing(false);
-
-                            } else {
-                                mComplexRecyclerViewHomeTweetsAdapter.notifyDataSetChanged();
+                                //add to list
+                                if (isRefreshed) {
+                                    Log.i("TimelineActivity", fetchedTweets.size() + " new tweets " +
+                                            "found");
+                                    for (int i = fetchedTweets.size() - 1; i >= 0; i--) {
+                                        mTweets.addFirst(fetchedTweets.get(i));
+                                    }
+                                } else {
+                                    mTweets.addAll(fetchedTweets);
+                                }
+                                Log.i("TimelineActivity", mTweets.getFirst().getIdStr() + " max id");
+                                Log.i("TimelineActivity", mTweets.getLast().getIdStr() + " since id");
+                                Log.i("TimelineActivity", mTweets.size() + " tweets found");
                             }
+                        } catch (JsonParseException e) {
+                            Log.d("Async onSuccess", "Json parsing error:" + e.getMessage(), e);
+                        }
+
+                        //notify adapter
+                        if (isScrolled) {
+                            mComplexRecyclerViewHomeTweetsAdapter.notifyItemRangeInserted(
+                                    mComplexRecyclerViewHomeTweetsAdapter.getItemCount(),
+                                    fetchedTweets.size());
+                        } else if (isRefreshed) {
+                            mComplexRecyclerViewHomeTweetsAdapter.notifyItemRangeInserted(0,
+                                    fetchedTweets.size());
+                            //layoutManager.scrollToPosition(0);
+                            // Now we call setRefreshing(false) to signal refresh has finished
+                            mSwipeRefreshLayout.setRefreshing(false);
+
+                        } else {
+                            mComplexRecyclerViewHomeTweetsAdapter.notifyDataSetChanged();
                         }
                     }
+                }
 
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, String responseString,
-                                          Throwable throwable) {
-                        Log.w("AsyncHttpClient", "HTTP Request failure: " + statusCode + " " +
-                                throwable.getMessage());
-                    }
-                });
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString,
+                                      Throwable throwable) {
+                    Log.w("AsyncHttpClient", "HTTP Request failure: " + statusCode + " " +
+                            throwable.getMessage());
+                }
+            });
 
     }
     @Override
