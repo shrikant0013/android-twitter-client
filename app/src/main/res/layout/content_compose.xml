@@ -69,22 +69,31 @@
             android:layout_height="wrap_content"
             android:id="@+id/btnTweetSent"
             android:text="@string/send"
-            android:layout_alignParentTop="true"
+            android:layout_gravity="end"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             style="?android:attr/borderlessButtonStyle"
             />
 
+        <View
+            android:id="@+id/vItemsHorizontalSeperator"
+            android:layout_width="0.5dp"
+            android:layout_height="wrap_content"
+            android:background="@android:color/darker_gray"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="2dp"
+            android:layout_toLeftOf="@id/btnTweetSent"
+            android:layout_alignTop="@id/btnTweetSent"
+            android:layout_alignBottom="@id/btnTweetSent"/>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/tvCharacterCount"
-            android:layout_marginRight="20dp"
-            android:layout_toStartOf="@id/btnTweetSent"
-            android:layout_toLeftOf="@id/btnTweetSent"
+            android:gravity="center"
+            android:layout_toLeftOf="@id/vItemsHorizontalSeperator"
             android:layout_alignTop="@id/btnTweetSent"
             android:layout_alignBottom="@id/btnTweetSent"
             />
-
     </RelativeLayout>
 </LinearLayout>

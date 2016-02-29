@@ -61,7 +61,7 @@ public class FollowersActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
-        getSupportActionBar().setLogo(R.mipmap.ic_twitter_white);
+        getSupportActionBar().setLogo(R.mipmap.ic_launcher_birdy);
         getSupportActionBar().setTitle("Followers");
 
         Intent i = getIntent();

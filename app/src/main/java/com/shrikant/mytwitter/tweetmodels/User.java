@@ -1,5 +1,6 @@
 package com.shrikant.mytwitter.tweetmodels;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import com.activeandroid.Model;
@@ -19,6 +20,7 @@ public class User extends Model implements Parcelable {
     public static final String NAME = "name";
     public static final String SCREEN_NAME = "screen_name";
     public static final String PROFILE_IMAGE_URL = "profile_image_url";
+    public static final String PROFILE_BACKGROUND_IMAGE_URL = "profile_background_image_url";
     public static final String FOLLOWERS_COUNT = "followers_count";
     public static final String DESCRIPTION = "description";
     public static final String FRIENDS = "friends_count";
@@ -46,6 +48,9 @@ public class User extends Model implements Parcelable {
 
     @Column(name = "Following")
     private String following;
+
+    @Column(name = "ProfileBackgroundImageUrl")
+    private String profileBackgroundImageUrl;
 
     public User() {
         super();
@@ -116,6 +121,14 @@ public class User extends Model implements Parcelable {
         this.following = following;
     }
 
+    public String getProfileBackgroundImageUrl() {
+        return profileBackgroundImageUrl;
+    }
+
+    public void setProfileBackgroundImageUrl(String profileBackgroundImageUrl) {
+        this.profileBackgroundImageUrl = profileBackgroundImageUrl;
+    }
+
     public static User fromJsonObjectToUser(JsonObject jsonUserObject) {
         User user = new User();
         if (jsonUserObject.has(ID_STR)) {
@@ -130,6 +143,15 @@ public class User extends Model implements Parcelable {
         }
         if (jsonUserObject.has(PROFILE_IMAGE_URL)) {
             user.setProfileImageUrl(jsonUserObject.get(PROFILE_IMAGE_URL).getAsString());
+        }
+
+        if (jsonUserObject.has(PROFILE_BACKGROUND_IMAGE_URL) ) {
+            JsonElement jsonBgImageElement = jsonUserObject.get(PROFILE_BACKGROUND_IMAGE_URL);
+            if (!jsonBgImageElement.isJsonNull()) {
+                user.setProfileBackgroundImageUrl(jsonUserObject.get(PROFILE_BACKGROUND_IMAGE_URL).getAsString());
+            } else {
+                user.setProfileBackgroundImageUrl("");
+            }
         }
 
         if (jsonUserObject.has(DESCRIPTION)) {
@@ -161,6 +183,7 @@ public class User extends Model implements Parcelable {
         dest.writeString(this.tagLine);
         dest.writeString(this.followers);
         dest.writeString(this.following);
+        dest.writeString(this.profileBackgroundImageUrl);
     }
 
     protected User(Parcel in) {
@@ -171,6 +194,7 @@ public class User extends Model implements Parcelable {
         this.tagLine = in.readString();
         this.followers = in.readString();
         this.following = in.readString();
+        this.profileBackgroundImageUrl = in.readString();
     }
 
     public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {

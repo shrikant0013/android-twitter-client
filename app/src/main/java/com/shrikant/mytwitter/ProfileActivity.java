@@ -108,7 +108,9 @@ public class ProfileActivity extends AppCompatActivity {
             //Create UserTimelinefragment
             UserTimelineFragment userTimelineFragment = UserTimelineFragment.newInstance(screenName);
             UserInfoFragment userInfoFragment =
-                    UserInfoFragment.newInstance(newUser.getProfileImageUrl(),
+                    UserInfoFragment.newInstance(
+                            newUser.getProfileImageUrl(),
+                            newUser.getProfileBackgroundImageUrl(),
                             newUser.getUserName(), newUser.getTagLine(),
                             newUser.getFollowers(), newUser.getFollowing());
 

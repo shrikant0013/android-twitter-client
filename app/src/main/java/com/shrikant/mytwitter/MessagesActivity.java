@@ -82,7 +82,7 @@ public class MessagesActivity extends AppCompatActivity
             }
         });
 
-        getSupportActionBar().setLogo(R.mipmap.ic_twitter_white);
+        getSupportActionBar().setLogo(R.mipmap.ic_launcher_birdy);
         getSupportActionBar().setTitle("Messages");
 
         mMessages = new LinkedList<>();

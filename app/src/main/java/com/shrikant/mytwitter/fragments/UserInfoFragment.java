@@ -28,8 +28,10 @@ public class UserInfoFragment extends Fragment  {
     @Bind(R.id.tvUserTagLine) TextView mTextViewUserTageLine;
     @Bind(R.id.tvProfileFollowers) TextView mTextViewUserProfileFollowers;
     @Bind(R.id.tvProfileFollowing) TextView mTextViewUserProfileFollowing;
+    @Bind(R.id.ivUserProfileBackgroundImage) ImageView mImageViewUserBackgroundProfileImage;
 
     public static UserInfoFragment newInstance(String profileUrl,
+                                               String profileBackgroundUrl,
                                                String name,
                                                String tagLine,
                                                String followers,
@@ -41,6 +43,7 @@ public class UserInfoFragment extends Fragment  {
         args.putString("tag_line", tagLine);
         args.putString("followers", followers);
         args.putString("following", following);
+        args.putString("profile_background_image_url", profileBackgroundUrl);
         userInfoFragment.setArguments(args);
         return userInfoFragment;
     }
@@ -68,6 +71,13 @@ public class UserInfoFragment extends Fragment  {
                 .placeholder(R.mipmap.ic_wifi)
                 .fitCenter()
                 .into(mImageViewUserProfileImage);
+
+//        Log.i("UserInfoFragment", getArguments().getString("profile_background_image_url"));
+//        Glide.with(getContext()).load(getArguments().getString("profile_background_image_url"))
+//                .placeholder(R.mipmap.ic_wifi)
+//                .error(R.drawable.striped)
+//                .fitCenter()
+//                .into(mImageViewUserBackgroundProfileImage);
 
         return v;
     }
