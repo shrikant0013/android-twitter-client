@@ -38,6 +38,8 @@ public class TimelineActivity extends AppCompatActivity
             implements ComposeFragment.OnTweetComposedListener {
     private final int REQUEST_CODE = 200;
 
+    User me;
+
     @Bind(R.id.toolbar) Toolbar toolbar;
     @Bind(R.id.sliding_tabs) TabLayout mTabLayout;
     //@Bind(R.id.pager_header) PagerTabStrip mPagerTabStrip;
@@ -50,7 +52,11 @@ public class TimelineActivity extends AppCompatActivity
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
-        getSupportActionBar().setLogo(R.mipmap.ic_twitter_logo);
+        getSupportActionBar().setLogo(R.mipmap.ic_launcher_birdy);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayUseLogoEnabled(true);
 
         vpPager.setAdapter(new TweetsPagerAdapter(getSupportFragmentManager()));
         mTabLayout.setupWithViewPager(vpPager);
@@ -64,6 +70,7 @@ public class TimelineActivity extends AppCompatActivity
                 editTweet();
             }
         });
+        storeMyInfo();
     }
 
     //Send an API request to get the timeline json
@@ -127,8 +134,6 @@ public class TimelineActivity extends AppCompatActivity
         //saveToDB();
     }
 
-
-
     public void launchComposeDialog(String userProfileUrl) {
         ComposeFragment composeFragment = ComposeFragment.newInstance(userProfileUrl);
         FragmentManager fm = getSupportFragmentManager();
@@ -153,6 +158,39 @@ public class TimelineActivity extends AppCompatActivity
     }
 
     void editTweet() {
+        if (me != null && !TextUtils.isEmpty(me.getProfileImageUrl())) {
+            launchComposeDialog(me.getProfileImageUrl());
+        } else {
+            TwitterClient mTwitterClient = TwitterApplication.getRestClient();
+            mTwitterClient.getMyInfo(new TextHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                    try {
+                        Gson gson = new GsonBuilder().create();
+                        JsonObject jsonUserObject = gson.fromJson(responseString, JsonObject.class);
+
+                        if (jsonUserObject != null) {
+                            me = User.fromJsonObjectToUser(jsonUserObject);
+                            if (me != null && !TextUtils.isEmpty(me.getProfileImageUrl())) {
+                                launchComposeDialog(me.getProfileImageUrl());
+                            }
+                        }
+                    } catch (JsonParseException e) {
+                        Log.d("Async onSuccess", "Json parsing error:" + e.getMessage(), e);
+                    }
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    Log.w("AsyncHttpClient", "HTTP Request failure: " + statusCode + " " +
+                            throwable.getMessage());
+                }
+
+            });
+        }
+    }
+
+    void storeMyInfo() {
         TwitterClient mTwitterClient = TwitterApplication.getRestClient();
         mTwitterClient.getMyInfo(new TextHttpResponseHandler() {
             @Override
@@ -162,10 +200,7 @@ public class TimelineActivity extends AppCompatActivity
                     JsonObject jsonUserObject = gson.fromJson(responseString, JsonObject.class);
 
                     if (jsonUserObject != null) {
-                        User newUser = User.fromJsonObjectToUser(jsonUserObject);
-                        if (newUser != null && !TextUtils.isEmpty(newUser.getProfileImageUrl())) {
-                            launchComposeDialog(newUser.getProfileImageUrl());
-                        }
+                        me = User.fromJsonObjectToUser(jsonUserObject);
                     }
                 } catch (JsonParseException e) {
                     Log.d("Async onSuccess", "Json parsing error:" + e.getMessage(), e);
@@ -179,6 +214,7 @@ public class TimelineActivity extends AppCompatActivity
             }
 
         });
+
     }
 
     @Override
@@ -199,5 +235,33 @@ public class TimelineActivity extends AppCompatActivity
             homeTweetsFragment.layoutManager.scrollToPosition(0);
 
         }
+    }
+
+    public void onMessageClick(MenuItem item) {
+        Intent i = new Intent(this, MessagesActivity.class);
+        startActivity(i);
+    }
+
+    public void replyToTweet(View view) {
+        //Toast.makeText(this,  "Replying to tweet: " + (String) view.getTag(), Toast.LENGTH_SHORT).show();
+        Log.i("TimelineActivity", "Clicked user profile is: " + (String) view.getTag());
+        String arg =  (String) view.getTag();
+        String[] args = arg.split("@");
+        ComposeFragment composeFragment = null;
+
+        String profileImageUrl ="";
+        if (me != null && !TextUtils.isEmpty(me.getProfileImageUrl())) {
+            profileImageUrl = me.getProfileImageUrl();
+        }
+
+        if (args.length > 1) {
+
+            composeFragment = ComposeFragment.newInstance(true, args[0], "@" + args[1],
+                    profileImageUrl);
+        } else  {
+            composeFragment = ComposeFragment.newInstance(false, "", "", profileImageUrl);
+        }
+        FragmentManager fm = getSupportFragmentManager();
+        composeFragment.show(fm, "compose");
     }
 }

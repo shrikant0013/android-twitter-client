@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="4dp"
+    android:paddingLeft="4dp"
+    android:paddingRight="4dp"
+    android:paddingTop="4dp"
+    android:weightSum="1">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Enter Name"
+        android:id="@+id/tvMessageComposeEnterName" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/etComposeMessageSendersName" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Enter New Message"
+        android:id="@+id/tvComposeMessageEnterMessage" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:inputType="textMultiLine"
+        android:ems="10"
+        android:gravity="top"
+        android:id="@+id/etComposeMessageText"
+        android:layout_weight="0.70" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <!--
+        <View
+            android:id="@+id/vMessageItemsSeperator"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@android:color/darker_gray"/>
+
+            android:layout_below="@+id/vMessageItemsSeperator"
+        -->
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/message_send"
+            android:id="@+id/btnComposeMessageSend"
+            android:layout_gravity="end"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+        <View
+            android:id="@+id/vMessageItemsHorizontalSeperator"
+            android:layout_width="0.5dp"
+            android:layout_height="wrap_content"
+            android:background="@android:color/darker_gray"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:layout_toLeftOf="@id/btnComposeMessageSend"
+            android:layout_alignTop="@id/btnComposeMessageSend"
+            android:layout_alignBottom="@id/btnComposeMessageSend"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/message_cancel"
+            android:id="@+id/btnComposeMessageCancel"
+            android:layout_toLeftOf="@id/vMessageItemsHorizontalSeperator"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_alignTop="@id/btnComposeMessageSend"
+            android:layout_alignBottom="@id/btnComposeMessageSend"/>
+
+    </RelativeLayout>
+
+
+</LinearLayout>

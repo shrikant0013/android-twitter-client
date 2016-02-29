@@ -26,6 +26,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import butterknife.Bind;
@@ -52,10 +53,28 @@ public class ComposeFragment  extends DialogFragment {
     @Bind(R.id.tvCharacterCount) TextView mTextViewCharCount;
     @Bind(R.id.etComposeBody) EditText mEditTextComposeBody;
     @Bind(R.id.ivComposeUserProfileImage) ImageView mImageViewUserProfileImage;
+    @Bind(R.id.ll_in_reply_to) LinearLayout mLinearLayoutReplyTo;
+    @Bind(R.id.ivInReplyToArrow) ImageView mImageViewInReplyToArrow;
+    @Bind(R.id.tvInReplyToText) TextView mTextViewInReplyToText;
 
     public static ComposeFragment newInstance(String userProfileUrl) {
         ComposeFragment composeFragment = new ComposeFragment();
         Bundle args = new Bundle();
+        args.putString("user_profile_url", userProfileUrl);
+        composeFragment.setArguments(args);
+
+        return composeFragment;
+    }
+
+
+    public static ComposeFragment newInstance(boolean isReplyTo, String inReplyToStatusId,
+                                              String recipientScreenName,
+                                              String userProfileUrl) {
+        ComposeFragment composeFragment = new ComposeFragment();
+        Bundle args = new Bundle();
+        args.putBoolean("in_reply_to", isReplyTo);
+        args.putString("in_reply_to_status_id", inReplyToStatusId);
+        args.putString("to_screen_name", recipientScreenName);
         args.putString("user_profile_url", userProfileUrl);
         composeFragment.setArguments(args);
 
@@ -71,6 +90,17 @@ public class ComposeFragment  extends DialogFragment {
         ButterKnife.bind(this, rootView);
 
         //getDialog().setTitle("Update Status");
+
+        if (getArguments().containsKey("in_reply_to") && getArguments().getBoolean("in_reply_to")) {
+            mLinearLayoutReplyTo.setVisibility(LinearLayout.VISIBLE);
+
+            if (getArguments().containsKey("to_screen_name")) {
+                String replyTextSet = mTextViewInReplyToText.getText().toString();
+
+                mTextViewInReplyToText.setText(replyTextSet + " " +
+                        getArguments().getString("to_screen_name"));
+            }
+        }
 
         mTwitterClient = TwitterApplication.getRestClient();
         return rootView;
@@ -116,17 +146,32 @@ public class ComposeFragment  extends DialogFragment {
         if (!TextUtils.isEmpty(userProfileUrl)) {
             Glide.with(getContext()).load(userProfileUrl)
                     .placeholder(R.mipmap.ic_wifi)
+                    .error(R.mipmap.ic_missing_user)
                     .fitCenter()
                     .into(mImageViewUserProfileImage);
+
         }
     }
-
 
     @OnClick(R.id.btnTweetSent)
     public void sendTweet (View view){
         String tweetText = mEditTextComposeBody.getText().toString();
+        boolean isReplyTo = false;
+        String inReplyToStatusId ="";
 
-        mTwitterClient.sendTweet(tweetText, new TextHttpResponseHandler() {
+        if (getArguments().containsKey("in_reply_to") && getArguments().getBoolean("in_reply_to")) {
+            isReplyTo = true;
+            if (getArguments().containsKey("in_reply_to_status_id")) {
+                inReplyToStatusId = getArguments().getString("in_reply_to_status_id");
+
+                if (getArguments().containsKey("to_screen_name")) {
+                    tweetText = getArguments().getString("to_screen_name") + " " + tweetText;
+                    Log.i("ComposeFragment", "Composing tweet as " + tweetText);
+                }
+            }
+        }
+
+        mTwitterClient.sendTweet(tweetText, isReplyTo, inReplyToStatusId, new TextHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, String responseString) {
                 Tweet composeTweet = new Tweet();

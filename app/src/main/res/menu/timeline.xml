@@ -12,6 +12,13 @@
     </item>
     -->
     <item
+        android:id="@+id/messages"
+        app:showAsAction="ifRoom"
+        android:title="@string/message"
+        android:icon="@drawable/ic_message"
+        android:onClick="onMessageClick"/>
+
+    <item
         android:id="@+id/userProfile"
         app:showAsAction="ifRoom"
         android:title="@string/profile"

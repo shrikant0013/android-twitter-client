@@ -63,6 +63,7 @@ public class ComplexRecyclerViewTweetsAdapter
                 View v1 = inflater.inflate(R.layout.view_template_textonly_tweet,
                         viewGroup, false);
                 viewHolder = new TextOnlyTweetViewHolder(mContext, v1, sTweets);
+
                 break;
             case TEXT_PLUS_IMAGE:
                 View v2 = inflater.inflate(R.layout.view_template_image_tweet,
@@ -75,6 +76,7 @@ public class ComplexRecyclerViewTweetsAdapter
                 viewHolder = new ImageTextTweetViewHolder(mContext, v2, sTweets);
                 break;
         }
+
         return viewHolder;
     }
 
@@ -105,6 +107,8 @@ public class ComplexRecyclerViewTweetsAdapter
         viewHolder.mTextViewUserName.setText(tweet.getUser().getUserName());
         viewHolder.mTextViewTwitterHandle.setText( "@" + tweet.getUser().getTwitterHandle());
         viewHolder.mImageViewProfileImage.setTag(tweet.getUser().getTwitterHandle());
+        viewHolder.mImageViewReplyToTweet.setTag(tweet.getIdStr() + "@" +
+                tweet.getUser().getTwitterHandle());
 
         if (!TextUtils.isEmpty(tweet.getUser().getProfileImageUrl())) {
             Picasso.with(mContext).load(tweet.getUser().getProfileImageUrl())
@@ -141,6 +145,8 @@ public class ComplexRecyclerViewTweetsAdapter
                     .into(viewHolder.mImageViewProfileImage);
         }
         viewHolder.mImageViewProfileImage.setTag(tweet.getUser().getTwitterHandle());
+        viewHolder.mImageViewReplyToTweet.setTag(tweet.getIdStr() + "@" +
+                tweet.getUser().getTwitterHandle());
 
         viewHolder.mTextViewTimeSend.setText(Util.getRelativeTimeAgo(tweet.getCreated_at()));
     }
@@ -155,5 +161,18 @@ public class ComplexRecyclerViewTweetsAdapter
     public void addAll(List<Tweet> list) {
         sTweets.addAll(list);
         notifyDataSetChanged();
+    }
+
+    /***** Creating OnItemClickListener *****/
+
+    // Define listener member variable
+    static OnReplyIconClickListener listener;
+    // Define the listener interface
+    public interface OnReplyIconClickListener {
+        void onItemClick(View itemView, int position);
+    }
+    // Define the method that allows the parent activity or fragment to define the listener
+    public void setOnItemClickListener(OnReplyIconClickListener listener) {
+        this.listener = listener;
     }
 }

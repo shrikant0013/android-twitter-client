@@ -28,6 +28,7 @@ public class TextOnlyTweetViewHolder extends RecyclerView.ViewHolder
     @Bind(R.id.tvTwitterHandle) TextView mTextViewTwitterHandle;
     @Bind(R.id.tvTimeSend) TextView mTextViewTimeSend;
     @Bind(R.id.ivProfileImage) ImageView mImageViewProfileImage;
+    @Bind(R.id.ivReplyToTweet) ImageView mImageViewReplyToTweet;
 
     List<Tweet> mTweets;
     Context mContext;

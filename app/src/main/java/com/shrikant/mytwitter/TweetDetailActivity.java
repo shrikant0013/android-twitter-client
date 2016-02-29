@@ -151,7 +151,7 @@ public class TweetDetailActivity extends AppCompatActivity {
     public void sendTweet(View view) {
         String tweetText = mEditTextDetailsReplyToText.getText().toString();
 
-        mTwitterClient.sendTweet(tweetText, new TextHttpResponseHandler() {
+        mTwitterClient.sendTweet("", false, tweetText, new TextHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, String responseString) {
                 Tweet composeTweet = new Tweet();

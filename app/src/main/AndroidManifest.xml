@@ -17,7 +17,7 @@
     <application
         android:name=".TwitterApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_twitter_logo"
+        android:icon="@mipmap/ic_launcher_birdy"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <meta-data
@@ -29,6 +29,7 @@
 
         <activity
             android:name=".LoginActivity"
+            android:icon="@mipmap/ic_launcher_birdy"
             android:label="@string/app_name"
             android:theme="@style/AppTheme">
             <intent-filter>
@@ -50,8 +51,8 @@
         <activity
             android:name=".TimelineActivity"
             android:label="@string/title_activity_timeline"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:launchMode="singleTop"/>
+            android:launchMode="singleTop"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ComposeActivity"
             android:label="@string/title_activity_compose"
@@ -75,13 +76,24 @@
         <activity
             android:name=".SearchActivity"
             android:label="@string/title_activity_search"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName=".TimelineActivity" >
+            android:parentActivityName=".TimelineActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".TimelineActivity" />
+        </activity>
+        <activity
+            android:name=".MessagesActivity"
+            android:label="@string/title_activity_messages"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".TimelineActivity">
 
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".TimelineActivity" />
         </activity>
     </application>
 

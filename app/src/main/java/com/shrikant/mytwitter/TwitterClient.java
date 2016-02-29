@@ -56,15 +56,18 @@ public class TwitterClient extends OAuthBaseClient {
         }
         //Execute the request
         getClient().get(apiUrl, params, handler);
-//        getClient().get(
-//                "https://gist.githubusercontent.com/shrikant0013/0ab543ce0b2f645eb3bb/raw/92d6f17df7374d9aa4c55a45ec397fb1940c29d8/homelinetweet",
-//                handler);
     }
 
-    public void sendTweet(String text, AsyncHttpResponseHandler handler) {
+    public void sendTweet(String text, boolean isReplyTo,
+                          String inReplyToStatusId, AsyncHttpResponseHandler handler) {
         String apiUrl = getApiUrl("statuses/update.json");
         //Specify the params
         RequestParams params = new RequestParams();
+
+        if (isReplyTo) {
+            params.put("in_reply_to_status_id", inReplyToStatusId);
+        }
+
         params.put("status", text);
 
         //Execute the request
@@ -146,6 +149,38 @@ public class TwitterClient extends OAuthBaseClient {
 
         getClient().get(apiUrl, params, handler);
     }
+
+    public void getMessages(long maxId,  long sinceId, boolean isScrolled, boolean isRefreshed,
+                                AsyncHttpResponseHandler handler) {
+        String apiUrl = getApiUrl("direct_messages.json");
+        //Specify the params
+        RequestParams params = new RequestParams();
+
+        if (isScrolled) {
+            params.put("max_id", maxId);
+            params.put("count", 25);
+        } else if(isRefreshed) {
+            params.put("since_id", sinceId);
+        } else {
+            params.put("count", 25);
+            params.put("since_id", 1); //get latest tweets
+        }
+        //Execute the request
+        getClient().get(apiUrl, params, handler);
+    }
+
+    //direct_messages/new.json
+    public void sendMessage(String text, String screenName, AsyncHttpResponseHandler handler) {
+        String apiUrl = getApiUrl("direct_messages/new.json");
+        //Specify the params
+        RequestParams params = new RequestParams();
+        params.put("text", text);
+        params.put("screen_name", screenName);
+
+        //Execute the request
+        getClient().post(apiUrl, params, handler);
+    }
+
 
     //https://gist.github.com/shrikant0013/0ab543ce0b2f645eb3bb
 

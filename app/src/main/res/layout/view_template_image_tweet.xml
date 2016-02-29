@@ -32,6 +32,11 @@
             android:scaleType="fitXY"
             android:adjustViewBounds="true"
             android:background="@color/white"/>
+
+        <include layout="@layout/view_tweet_footer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"/>
     </LinearLayout>
 
 </LinearLayout>

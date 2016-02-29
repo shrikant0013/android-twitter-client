@@ -4,20 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-
-       >
+        android:orientation="horizontal">
 
         <ImageView
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:id="@+id/ibDismiss"
-            android:src="@mipmap/ic_dismiss2"
+            android:src="@mipmap/ic_dismiss_compose"
             android:layout_marginLeft="5dp"/>
 
         <ImageView
@@ -26,6 +25,27 @@
             android:id="@+id/ivComposeUserProfileImage"
             android:layout_marginLeft="180dp"/>
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_in_reply_to"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/ivInReplyToArrow"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:src="@drawable/ic_reply_to"/>
+
+        <TextView
+            android:id="@+id/tvInReplyToText"
+            android:layout_width="wrap_content"
+            android:layout_height="15dp"
+            android:text="@string/in_reply_to"
+            android:textSize="12sp"
+            android:layout_marginLeft="5dp"/>
     </LinearLayout>
 
     <EditText
@@ -41,24 +61,30 @@
         android:layout_height="match_parent"
         android:orientation="horizontal"
         android:layout_marginLeft="100dp"
-        android:layout_marginRight="20dp">
-
-        <TextView
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/tvCharacterCount"
-            android:layout_marginRight="20dp"
-            />
+        android:layout_marginRight="20dp"
+      >
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/btnTweetSent"
             android:text="@string/send"
-            android:layout_gravity="end"
-            android:layout_toRightOf="@id/tvCharacterCount"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             style="?android:attr/borderlessButtonStyle"
-            android:height="5dp" />
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvCharacterCount"
+            android:layout_marginRight="20dp"
+            android:layout_toStartOf="@id/btnTweetSent"
+            android:layout_toLeftOf="@id/btnTweetSent"
+            android:layout_alignTop="@id/btnTweetSent"
+            android:layout_alignBottom="@id/btnTweetSent"
+            />
 
     </RelativeLayout>
 </LinearLayout>

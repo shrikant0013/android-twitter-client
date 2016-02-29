@@ -21,9 +21,12 @@
             android:id="@+id/tvTweetTextOnly"
             android:autoLink="all"
             android:linksClickable="true"
-            android:background="@color/white"
+            android:background="@color/white" />
 
-            />
+        <include layout="@layout/view_tweet_footer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"/>
     </LinearLayout>
 </LinearLayout>
 
