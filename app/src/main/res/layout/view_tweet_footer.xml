@@ -17,14 +17,7 @@
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" /-->
 
-    <TextView
-        android:id="@+id/tvRetweets"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="5dp"
-        android:text="15" />
+
 
     <ImageView
         android:id="@+id/ivRetweet"
@@ -33,6 +26,16 @@
         android:layout_toRightOf="@id/ivReplyToTweet"
         android:src="@drawable/ic_retweet_gray"
         android:layout_marginLeft="80dp"/>
+
+    <TextView
+        android:id="@+id/tvRetweets"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="5dp"
+        android:layout_toRightOf="@id/ivRetweet"
+        android:text="15" />
 
     <TextView
         android:id="@+id/tvLikes"

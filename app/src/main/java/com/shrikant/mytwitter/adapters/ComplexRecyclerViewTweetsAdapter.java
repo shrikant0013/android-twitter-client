@@ -110,6 +110,9 @@ public class ComplexRecyclerViewTweetsAdapter
         viewHolder.mImageViewReplyToTweet.setTag(tweet.getIdStr() + "@" +
                 tweet.getUser().getTwitterHandle());
 
+        viewHolder.mImageViewReTweet.setTag(tweet.getIdStr());
+        viewHolder.mImageViewLike.setTag(tweet.getIdStr());
+
         if (!TextUtils.isEmpty(tweet.getUser().getProfileImageUrl())) {
             Picasso.with(mContext).load(tweet.getUser().getProfileImageUrl())
                     .placeholder(R.mipmap.ic_wifi)
@@ -118,6 +121,8 @@ public class ComplexRecyclerViewTweetsAdapter
         }
 
         viewHolder.mTextViewTimeSend.setText(Util.getRelativeTimeAgo(tweet.getCreated_at()));
+        viewHolder.mTextViewRetweets.setText(tweet.getRetweet_count());
+        viewHolder.mTextViewLikes.setText(tweet.getFavourite_count());
     }
 
     private void configureImageTextTweetViewHolder(ImageTextTweetViewHolder viewHolder,
@@ -148,7 +153,12 @@ public class ComplexRecyclerViewTweetsAdapter
         viewHolder.mImageViewReplyToTweet.setTag(tweet.getIdStr() + "@" +
                 tweet.getUser().getTwitterHandle());
 
+        viewHolder.mImageViewReTweet.setTag(tweet.getIdStr());
+        viewHolder.mImageViewLike.setTag(tweet.getIdStr());
+
         viewHolder.mTextViewTimeSend.setText(Util.getRelativeTimeAgo(tweet.getCreated_at()));
+        viewHolder.mTextViewRetweets.setText(tweet.getRetweet_count());
+        viewHolder.mTextViewLikes.setText(tweet.getFavourite_count());
     }
 
     // Clean all elements of the recycler
